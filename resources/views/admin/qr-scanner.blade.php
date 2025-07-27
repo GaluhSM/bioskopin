@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-800">QR Code Scanner</h1>
-    <p class="text-gray-600">Scan customer QR codes to view booking details</p>
+    <p class="text-gray-600">Scan customer QR codes to view booking details and update payment status</p>
 </div>
 
 <!-- Scanner Section -->
@@ -95,6 +95,21 @@
         </table>
     </div>
 </div>
+
+<!-- Status Update Modal -->
+<div id="statusModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Update Booking Status</h3>
+            <button onclick="closeStatusModal()" class="text-gray-600 hover:text-gray-900">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="statusModalContent">
+            <!-- Modal content will be loaded here -->
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('styles')
@@ -138,6 +153,7 @@
 <script>
 let html5QrCode = null;
 let recentScans = [];
+let currentBooking = null;
 
 // Initialize QR Scanner
 document.getElementById('start-camera').addEventListener('click', function() {
@@ -236,6 +252,7 @@ function fetchBookingDetails(uniqueCode) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            currentBooking = data.booking;
             displayBookingDetails(data.booking);
             addToRecentScans(data.booking);
             showStatus('Booking found successfully', 'success');
@@ -278,7 +295,7 @@ function displayBookingDetails(booking) {
                     <span class="value font-mono">${booking.unique_code}</span>
                     <span class="label">Status:</span>
                     <span class="value">
-                        <span class="px-2 py-1 text-xs rounded-full ${statusClass}">
+                        <span class="px-2 py-1 text-xs rounded-full ${statusClass}" id="current-status">
                             ${booking.status.replace('_', ' ').toUpperCase()}
                         </span>
                     </span>
@@ -335,22 +352,97 @@ function displayBookingDetails(booking) {
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex space-x-3">
-                ${booking.status === 'pending_payment' ? `
-                    <button onclick="markAsPaid('${booking.unique_code}')" 
-                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
-                        <i class="fas fa-check mr-2"></i>Mark as Paid
-                    </button>
-                ` : ''}
-                <button onclick="printBookingDetails()" 
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                    <i class="fas fa-print mr-2"></i>Print Details
-                </button>
+            <div class="flex space-x-3" id="action-buttons">
+                ${getActionButtons(booking)}
             </div>
         </div>
     `;
 
     document.getElementById('booking-details').innerHTML = detailsHtml;
+}
+
+function getActionButtons(booking) {
+    let buttons = '';
+    
+    if (booking.status === 'pending_payment') {
+        buttons += `
+            <button onclick="updateBookingStatus('${booking.unique_code}', 'paid')" 
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-check mr-2"></i>Mark as Paid
+            </button>
+            <button onclick="updateBookingStatus('${booking.unique_code}', 'cancelled')" 
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-times mr-2"></i>Cancel Booking
+            </button>
+        `;
+    } else if (booking.status === 'paid') {
+        buttons += `
+            <button onclick="updateBookingStatus('${booking.unique_code}', 'cancelled')" 
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-ban mr-2"></i>Cancel (Refund)
+            </button>
+        `;
+    } else if (booking.status === 'cancelled') {
+        buttons += `
+            <button onclick="updateBookingStatus('${booking.unique_code}', 'pending_payment')" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-undo mr-2"></i>Reactivate
+            </button>
+        `;
+    }
+    
+    buttons += `
+        <button onclick="printBookingDetails()" 
+                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-print mr-2"></i>Print Details
+        </button>
+    `;
+    
+    return buttons;
+}
+
+function updateBookingStatus(uniqueCode, newStatus) {
+    const confirmMessage = `Are you sure you want to ${newStatus === 'paid' ? 'mark this booking as paid' : newStatus === 'cancelled' ? 'cancel this booking' : 'update this booking status'}?`;
+    
+    if (!confirm(confirmMessage)) return;
+    
+    showStatus('Updating booking status...', 'info');
+    
+    fetch(`{{ route('admin.update-booking-status') }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ 
+            unique_code: uniqueCode,
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            currentBooking = data.booking;
+            showStatus('Booking status updated successfully', 'success');
+            
+            // Update the display
+            const statusElement = document.getElementById('current-status');
+            statusElement.textContent = newStatus.replace('_', ' ').toUpperCase();
+            statusElement.className = `px-2 py-1 text-xs rounded-full ${getStatusClass(newStatus)}`;
+            
+            // Update action buttons
+            document.getElementById('action-buttons').innerHTML = getActionButtons(data.booking);
+            
+            // Update recent scans
+            updateRecentScansTable();
+        } else {
+            showStatus('Failed to update booking status: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showStatus('Error updating booking status', 'error');
+    });
 }
 
 function hideBookingDetails() {
@@ -444,15 +536,12 @@ function showStatus(message, type) {
     }
 }
 
-function markAsPaid(uniqueCode) {
-    if (confirm('Mark this booking as paid?')) {
-        // This would need to be implemented in the backend
-        alert('This feature would update the booking status to paid in the database.');
-    }
-}
-
 function printBookingDetails() {
     window.print();
+}
+
+function closeStatusModal() {
+    document.getElementById('statusModal').classList.add('hidden');
 }
 
 // Handle Enter key in manual code input

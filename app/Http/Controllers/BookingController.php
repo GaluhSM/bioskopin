@@ -7,6 +7,7 @@ use App\Models\Schedule;
 use App\Models\Seat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BookingController extends Controller
 {
@@ -54,7 +55,8 @@ class BookingController extends Controller
             'schedule_id' => $request->schedule_id,
             'customer_name' => $request->customer_name,
             'customer_phone' => $request->customer_phone,
-            'unique_code' => Str::random(10),
+            'unique_code' => strtoupper(Str::random(10)),
+            'status' => 'pending_payment',
         ]);
 
         // Attach seats to booking
@@ -68,7 +70,12 @@ class BookingController extends Controller
         $booking = Booking::with(['schedule.movie', 'schedule.studio.cinema', 'seats'])
                          ->where('unique_code', $uniqueCode)
                          ->firstOrFail();
+
+        // Generate QR Code
+        $qrCode = QrCode::format('svg')
+                      ->size(200)
+                      ->generate($uniqueCode);
         
-        return view('booking.success', compact('booking'));
+        return view('booking.success', compact('booking', 'qrCode'));
     }
 }

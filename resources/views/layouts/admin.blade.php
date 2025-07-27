@@ -30,19 +30,24 @@
             
             <div class="px-6 py-3 text-gray-500 text-xs uppercase tracking-wide">Management</div>
             
-            <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+            <a href="{{ route('admin.movies.index') }}" 
+               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white {{ request()->routeIs('admin.movies.*') ? 'bg-gray-700 text-white' : '' }}">
                 <i class="fas fa-film mr-3"></i>Movies
             </a>
-            <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+            <a href="{{ route('admin.cinemas.index') }}" 
+               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white {{ request()->routeIs('admin.cinemas.*') ? 'bg-gray-700 text-white' : '' }}">
                 <i class="fas fa-building mr-3"></i>Cinemas
             </a>
-            <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+            <a href="{{ route('admin.studios.index') }}" 
+               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white {{ request()->routeIs('admin.studios.*') ? 'bg-gray-700 text-white' : '' }}">
                 <i class="fas fa-door-open mr-3"></i>Studios
             </a>
-            <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+            <a href="{{ route('admin.schedules.index') }}" 
+               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white {{ request()->routeIs('admin.schedules.*') ? 'bg-gray-700 text-white' : '' }}">
                 <i class="fas fa-calendar mr-3"></i>Schedules
             </a>
-            <a href="#" class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+            <a href="{{ route('admin.bookings.index') }}" 
+               class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white {{ request()->routeIs('admin.bookings.*') ? 'bg-gray-700 text-white' : '' }}">
                 <i class="fas fa-ticket-alt mr-3"></i>Bookings
             </a>
         </nav>

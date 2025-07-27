@@ -1,206 +1,175 @@
 @extends('layouts.app')
 
-@section('title', 'Booking Success - CinemaTicket')
+@section('title', 'Booking Successful')
 
 @section('content')
-<div class="bg-gray-900 min-h-screen py-8">
-    <div class="max-w-2xl mx-auto px-4">
+<div class="min-h-screen bg-gray-900 py-12">
+    <div class="max-w-4xl mx-auto px-4">
         <!-- Success Header -->
         <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-check text-2xl text-white"></i>
+            <div class="bg-green-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-3xl text-white"></i>
             </div>
-            <h1 class="text-3xl font-bold text-green-400 mb-2">Booking Successful!</h1>
-            <p class="text-gray-300">Your tickets have been reserved. Please proceed to the cinema for payment.</p>
+            <h1 class="text-3xl font-bold text-white mb-2">Booking Successful!</h1>
+            <p class="text-gray-400">Your tickets have been reserved. Please pay at the cinema counter.</p>
         </div>
 
-        <!-- QR Code Section -->
-        <div class="bg-gray-800 rounded-lg p-8 mb-8 text-center">
-            <h2 class="text-xl font-bold mb-4">
-                <i class="fas fa-qrcode mr-2 text-blue-400"></i>Your Ticket QR Code
-            </h2>
-            
-            <div class="bg-white p-6 rounded-lg inline-block mb-4">
-                {!! QrCode::size(200)->generate($booking->unique_code) !!}
-            </div>
-            
-            <p class="text-lg font-semibold text-blue-400 mb-2">{{ $booking->unique_code }}</p>
-            <p class="text-gray-400 text-sm">Present this QR code at the cinema counter for payment and ticket collection</p>
-        </div>
-
-        <!-- Booking Details -->
-        <div class="bg-gray-800 rounded-lg p-6 mb-8">
-            <h2 class="text-xl font-bold mb-4">
-                <i class="fas fa-ticket-alt mr-2 text-blue-400"></i>Booking Details
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Movie Info -->
-                <div>
-                    <div class="flex items-start space-x-4 mb-4">
-                        <img src="{{ $booking->schedule->movie->poster_url ?? 'https://via.placeholder.com/80x120/374151/9CA3AF' }}" 
-                             alt="{{ $booking->schedule->movie->title }}" 
-                             class="w-16 h-24 object-cover rounded">
-                        <div>
-                            <h3 class="font-bold text-lg">{{ $booking->schedule->movie->title }}</h3>
-                            <p class="text-gray-400 text-sm">{{ $booking->schedule->movie->duration_minutes }} minutes</p>
-                            <p class="text-gray-400 text-sm">{{ $booking->schedule->movie->audience_rating }}</p>
-                        </div>
-                    </div>
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Booking Details -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-ticket-alt mr-2 text-blue-400"></i>Booking Details
+                </h2>
                 
-                <!-- Customer Info -->
-                <div>
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-gray-400 text-sm">Customer Name:</span>
-                            <p class="font-semibold">{{ $booking->customer_name }}</p>
+                <div class="space-y-4">
+                    <!-- Customer Info -->
+                    <div class="border-b border-gray-700 pb-4">
+                        <h3 class="text-sm font-medium text-gray-400 mb-2">Customer Information</h3>
+                        <p class="text-white"><span class="text-gray-400">Name:</span> {{ $booking->customer_name }}</p>
+                        <p class="text-white"><span class="text-gray-400">Phone:</span> {{ $booking->customer_phone }}</p>
+                        <p class="text-white"><span class="text-gray-400">Booking Code:</span> 
+                            <span class="font-mono text-blue-400">{{ $booking->unique_code }}</span>
+                        </p>
+                    </div>
+
+                    <!-- Movie Info -->
+                    <div class="border-b border-gray-700 pb-4">
+                        <h3 class="text-sm font-medium text-gray-400 mb-2">Movie Information</h3>
+                        <p class="text-white font-semibold">{{ $booking->schedule->movie->title }}</p>
+                        <p class="text-gray-400">{{ $booking->schedule->movie->duration_minutes }} minutes • {{ $booking->schedule->movie->audience_rating }}</p>
+                    </div>
+
+                    <!-- Cinema & Schedule -->
+                    <div class="border-b border-gray-700 pb-4">
+                        <h3 class="text-sm font-medium text-gray-400 mb-2">Cinema & Schedule</h3>
+                        <p class="text-white">{{ $booking->schedule->studio->cinema->name }}</p>
+                        <p class="text-gray-400">{{ $booking->schedule->studio->name }}</p>
+                        <p class="text-gray-400">{{ $booking->schedule->start_time->format('l, F j, Y') }}</p>
+                        <p class="text-gray-400">{{ $booking->schedule->start_time->format('H:i') }} - {{ $booking->schedule->end_time->format('H:i') }}</p>
+                    </div>
+
+                    <!-- Seats -->
+                    <div class="border-b border-gray-700 pb-4">
+                        <h3 class="text-sm font-medium text-gray-400 mb-2">Selected Seats</h3>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($booking->seats as $seat)
+                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                                    {{ $seat->row }}{{ $seat->number }}
+                                </span>
+                            @endforeach
                         </div>
-                        <div>
-                            <span class="text-gray-400 text-sm">Phone Number:</span>
-                            <p class="font-semibold">{{ $booking->customer_phone }}</p>
+                    </div>
+
+                    <!-- Payment Summary -->
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-400 mb-2">Payment Summary</h3>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-gray-400">
+                                <span>Price per seat:</span>
+                                <span>Rp {{ number_format($booking->schedule->price, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Number of seats:</span>
+                                <span>{{ $booking->seats->count() }}</span>
+                            </div>
+                            <div class="flex justify-between text-white font-bold text-lg border-t border-gray-700 pt-2">
+                                <span>Total Amount:</span>
+                                <span class="text-green-400">Rp {{ number_format($booking->schedule->price * $booking->seats->count(), 0, ',', '.') }}</span>
+                            </div>
                         </div>
-                        <div>
-                            <span class="text-gray-400 text-sm">Booking Status:</span>
-                            <span class="inline-block px-2 py-1 bg-yellow-600 text-yellow-100 text-xs rounded-full">
-                                {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
-                            </span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="bg-yellow-900/30 border border-yellow-600 rounded p-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-yellow-400 mr-2"></i>
+                            <span class="text-yellow-200 font-medium">Status: Pending Payment</span>
                         </div>
+                        <p class="text-yellow-200 text-sm mt-1">Please complete payment at the cinema counter</p>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Cinema & Schedule Details -->
-        <div class="bg-gray-800 rounded-lg p-6 mb-8">
-            <h2 class="text-xl font-bold mb-4">
-                <i class="fas fa-map-marker-alt mr-2 text-blue-400"></i>Cinema & Schedule
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-gray-400 text-sm">Cinema:</span>
-                            <p class="font-semibold">{{ $booking->schedule->studio->cinema->name }}</p>
-                        </div>
-                        <div>
-                            <span class="text-gray-400 text-sm">Location:</span>
-                            <p class="font-semibold">{{ $booking->schedule->studio->cinema->location }}</p>
-                        </div>
-                        <div>
-                            <span class="text-gray-400 text-sm">Studio:</span>
-                            <p class="font-semibold">{{ $booking->schedule->studio->name }}</p>
-                        </div>
-                    </div>
-                </div>
+            <!-- QR Code -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-qrcode mr-2 text-green-400"></i>Payment QR Code
+                </h2>
                 
-                <div>
+                <div class="text-center">
+                    <div class="bg-white p-6 rounded-lg inline-block mb-4">
+                        {!! $qrCode !!}
+                    </div>
+                    
+                    <div class="bg-blue-900/30 border border-blue-600 rounded-lg p-4 mb-4">
+                        <h3 class="text-blue-200 font-medium mb-2">
+                            <i class="fas fa-info-circle mr-2"></i>Payment Instructions
+                        </h3>
+                        <div class="text-blue-200 text-sm space-y-1">
+                            <p>1. Take this QR code to the cinema counter</p>
+                            <p>2. Show the QR code to the cashier</p>
+                            <p>3. Complete your payment</p>
+                            <p>4. Receive your physical tickets</p>
+                        </div>
+                    </div>
+
                     <div class="space-y-3">
-                        <div>
-                            <span class="text-gray-400 text-sm">Date:</span>
-                            <p class="font-semibold">{{ $booking->schedule->start_time->format('l, F j, Y') }}</p>
-                        </div>
-                        <div>
-                            <span class="text-gray-400 text-sm">Showtime:</span>
-                            <p class="font-semibold">
-                                {{ $booking->schedule->start_time->format('H:i') }} - {{ $booking->schedule->end_time->format('H:i') }}
-                            </p>
-                        </div>
-                        <div>
-                            <span class="text-gray-400 text-sm">Seats:</span>
-                            <p class="font-semibold">
-                                @foreach($booking->seats as $seat)
-                                    <span class="inline-block bg-blue-600 text-white px-2 py-1 rounded text-sm mr-1">
-                                        {{ $seat->row }}{{ $seat->number }}
-                                    </span>
-                                @endforeach
-                            </p>
-                        </div>
+                        <button onclick="printTicket()" 
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                            <i class="fas fa-print mr-2"></i>Print Booking Details
+                        </button>
+                        
+                        <button onclick="shareBooking()" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors">
+                            <i class="fas fa-share mr-2"></i>Share Booking
+                        </button>
+                        
+                        <a href="{{ route('home') }}" 
+                           class="block w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors text-center">
+                            <i class="fas fa-home mr-2"></i>Back to Home
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Payment Summary -->
-        <div class="bg-gray-800 rounded-lg p-6 mb-8">
-            <h2 class="text-xl font-bold mb-4">
-                <i class="fas fa-receipt mr-2 text-blue-400"></i>Payment Summary
-            </h2>
-            
-            <div class="space-y-3">
-                <div class="flex justify-between">
-                    <span>Ticket Price ({{ $booking->seats->count() }} seat{{ $booking->seats->count() > 1 ? 's' : '' }}):</span>
-                    <span>Rp {{ number_format($booking->schedule->price * $booking->seats->count(), 0, ',', '.') }}</span>
-                </div>
-                <hr class="border-gray-700">
-                <div class="flex justify-between font-bold text-lg">
-                    <span>Total Amount:</span>
-                    <span class="text-green-400">Rp {{ number_format($booking->schedule->price * $booking->seats->count(), 0, ',', '.') }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Important Notice -->
-        <div class="bg-yellow-900 border-l-4 border-yellow-500 p-4 mb-8">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-triangle text-yellow-400"></i>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-yellow-400">Important Notice</h3>
-                    <div class="mt-2 text-sm text-yellow-300">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li>Please arrive at the cinema at least 15 minutes before showtime</li>
-                            <li>Present this QR code at the counter for payment and ticket collection</li>
-                            <li>Your seats are reserved for 30 minutes before showtime</li>
-                            <li>Payment must be completed at the cinema counter</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4">
-            <button onclick="window.print()" 
-                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                <i class="fas fa-print mr-2"></i>Print Ticket
-            </button>
-            <a href="{{ route('home') }}" 
-               class="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-center font-bold py-3 px-4 rounded-lg transition-colors">
-                <i class="fas fa-home mr-2"></i>Back to Home
-            </a>
+        <!-- Important Notes -->
+        <div class="mt-8 bg-red-900/30 border border-red-600 rounded-lg p-4">
+            <h3 class="text-red-200 font-medium mb-2">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Important Notes
+            </h3>
+            <ul class="text-red-200 text-sm space-y-1">
+                <li>• Your booking is valid for <strong>30 minutes</strong> before the showtime</li>
+                <li>• Please arrive at least <strong>15 minutes early</strong> to complete payment</li>
+                <li>• Bring a valid ID when collecting your tickets</li>
+                <li>• This booking will be cancelled if payment is not completed on time</li>
+            </ul>
         </div>
     </div>
 </div>
 
-@push('styles')
-<style>
-@media print {
-    body * {
-        visibility: hidden;
-    }
-    .printable, .printable * {
-        visibility: visible;
-    }
-    .printable {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-    }
-    nav, footer, .no-print {
-        display: none !important;
-    }
-}
-</style>
-@endpush
-
 @push('scripts')
 <script>
-// Add printable class to main content for printing
-document.querySelector('main').classList.add('printable');
+function printTicket() {
+    window.print();
+}
+
+function shareBooking() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Movie Booking - {{ $booking->schedule->movie->title }}',
+            text: 'Booking Code: {{ $booking->unique_code }}\nMovie: {{ $booking->schedule->movie->title }}\nDate: {{ $booking->schedule->start_time->format("l, F j, Y") }}\nTime: {{ $booking->schedule->start_time->format("H:i") }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback - copy to clipboard
+        const bookingDetails = `Booking Code: {{ $booking->unique_code }}\nMovie: {{ $booking->schedule->movie->title }}\nDate: {{ $booking->schedule->start_time->format("l, F j, Y") }}\nTime: {{ $booking->schedule->start_time->format("H:i") }}\nCinema: {{ $booking->schedule->studio->cinema->name }}`;
+        
+        navigator.clipboard.writeText(bookingDetails).then(() => {
+            alert('Booking details copied to clipboard!');
+        });
+    }
+}
 </script>
 @endpush
 @endsection

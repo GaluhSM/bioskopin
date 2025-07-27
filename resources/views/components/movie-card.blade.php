@@ -1,43 +1,67 @@
-@props(['movie'])
-
 <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group">
     <div class="relative">
-        <img src="{{ $movie->poster_url ?? 'https://via.placeholder.com/300x450/374151/9CA3AF?text=No+Image' }}" 
-             alt="{{ $movie->title }}" 
-             class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+        @if($movie->poster_url)
+            <img src="{{ asset('storage/' . $movie->poster_url) }}" 
+                 alt="{{ $movie->title }}" 
+                 class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+        @else
+            <div class="w-full h-64 bg-gray-700 flex items-center justify-center">
+                <i class="fas fa-film text-4xl text-gray-500"></i>
+            </div>
+        @endif
         
         @if($movie->is_trending)
-        <div class="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-            <i class="fas fa-fire mr-1"></i>Trending
-        </div>
+            <div class="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center">
+                <i class="fas fa-fire mr-1"></i>Trending
+            </div>
         @endif
-
+        
         @if($movie->rating)
-        <div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-bold">
-            <i class="fas fa-star mr-1"></i>{{ $movie->rating }}
-        </div>
+            <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded flex items-center">
+                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                <span class="text-sm font-semibold">{{ $movie->rating }}</span>
+            </div>
         @endif
+        
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
     </div>
     
     <div class="p-4">
-        <h3 class="text-lg font-semibold mb-2 text-white group-hover:text-blue-400 transition-colors">
-            {{ $movie->title }}
-        </h3>
+        <h3 class="text-lg font-semibold text-white mb-2 line-clamp-2">{{ $movie->title }}</h3>
         
-        <div class="flex items-center text-sm text-gray-400 mb-2">
-            <i class="fas fa-clock mr-1"></i>
+        <div class="flex items-center text-gray-400 text-sm mb-2">
+            <i class="fas fa-clock mr-2"></i>
             <span>{{ $movie->duration_minutes }} min</span>
             <span class="mx-2">•</span>
             <span>{{ $movie->audience_rating }}</span>
         </div>
         
-        <p class="text-gray-300 text-sm mb-4 line-clamp-3">
-            {{ Str::limit($movie->synopsis, 100) }}
-        </p>
+        <p class="text-gray-400 text-sm mb-4 line-clamp-3">{{ $movie->synopsis }}</p>
         
-        <a href="{{ route('movie.show', $movie->id) }}" 
-           class="inline-block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg transition-colors duration-200">
-            <i class="fas fa-ticket-alt mr-2"></i>View Details
-        </a>
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-500">
+                {{ $movie->release_date->format('M Y') }}
+            </div>
+            <a href="{{ route('movie.show', $movie->id) }}" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                View Details
+            </a>
+        </div>
     </div>
 </div>
+
+<style>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
