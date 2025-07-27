@@ -1,7 +1,7 @@
 <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group">
     <div class="relative">
         @if($movie->poster_url)
-            <img src="{{ asset('storage/' . $movie->poster_url) }}" 
+            <img src="{{ $movie->poster_url }}" 
                  alt="{{ $movie->title }}" 
                  class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
         @else
@@ -40,7 +40,7 @@
         
         <div class="flex items-center justify-between">
             <div class="text-sm text-gray-500">
-                {{ $movie->release_date->format('M Y') }}
+                {{ \Carbon\Carbon::parse($movie->release_date)->format('M Y') }}
             </div>
             <a href="{{ route('movie.show', $movie->id) }}" 
                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">

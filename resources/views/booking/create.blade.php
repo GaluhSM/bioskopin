@@ -19,7 +19,7 @@
                 <!-- Movie Info -->
                 <div class="flex space-x-4">
                     @if($schedule->movie->poster_url)
-                        <img src="{{ asset('storage/' . $schedule->movie->poster_url) }}" 
+                        <img src="{{ $schedule->movie->poster_url }}" 
                              alt="{{ $schedule->movie->title }}"
                              class="w-16 h-24 object-cover rounded">
                     @else

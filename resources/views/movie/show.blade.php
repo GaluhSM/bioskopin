@@ -37,11 +37,11 @@
                     <div class="flex flex-wrap items-center text-gray-300 mb-6 space-x-6">
                         <div class="flex items-center">
                             <i class="fas fa-clock mr-2"></i>
-                            <span>{{ $movie->duration_minutes }} minutes</span>
+                            <span>{{ $movie->duration_minutes }} menit</span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-calendar mr-2"></i>
-                            <span>{{ $movie->release_date->format('Y') }}</span>
+                            <span>{{ \Carbon\Carbon::parse($movie->release_date)->format('M Y') }}</span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-users mr-2"></i>
@@ -53,7 +53,7 @@
                     <div class="mb-6">
                         @if($movie->producer)
                         <p class="text-gray-300 mb-2">
-                            <span class="font-semibold">Producer:</span> {{ $movie->producer }}
+                            <span class="font-semibold">Produser:</span> {{ $movie->producer }}
                         </p>
                         @endif
                         @if($movie->publisher)
@@ -65,7 +65,7 @@
                     @endif
                     
                     <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3">Synopsis</h3>
+                        <h3 class="text-xl font-semibold mb-3">Sinopsis</h3>
                         <p class="text-gray-300 leading-relaxed">{{ $movie->synopsis }}</p>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
     <!-- Showtimes -->
     <div class="max-w-7xl mx-auto px-4 py-12">
         <h2 class="text-3xl font-bold mb-8">
-            <i class="fas fa-calendar-alt mr-3 text-blue-400"></i>Showtimes & Tickets
+            <i class="fas fa-calendar-alt mr-3 text-blue-400"></i>Jadwal Tayang & Tiket
         </h2>
         
         @if($schedules->count() > 0)
