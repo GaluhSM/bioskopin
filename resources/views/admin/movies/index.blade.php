@@ -14,14 +14,16 @@
 
     .movie-card {
         background: #1f2937;
+        border: 1px solid #374151;
         border-radius: 20px;
         overflow: hidden;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(229, 231, 235, 0.5);
         transition: all 0.3s ease;
     }
     
     .movie-card:hover {
+        background: #243447;
+        border-color: #4b5563;
         transform: translateY(-4px);
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
     }
@@ -93,7 +95,7 @@
                 </div>
                 Movies Management
             </h1>
-            <p class="text-white mt-2">Manage your movie collection and catalog</p>
+            <p class="text-gray-400 mt-2">Manage your movie collection and catalog</p>
         </div>
         <a href="{{ route('admin.movies.create') }}" class="add-movie-btn">
             <i class="fas fa-plus mr-2"></i>Add New Movie
@@ -154,15 +156,15 @@
                 <div class="p-6">
                     <div class="mb-4">
                         <h3 class="text-lg font-bold text-white mb-2 line-clamp-2">{{ $movie->title }}</h3>
-                        <div class="flex items-center justify-between text-sm text-white mb-3">
-                            <span class="bg-gray-100 px-2 py-1 rounded-full text-xs font-medium text-black">{{ $movie->audience_rating }}</span>
-                            <span class="flex items-center">
+                        <div class="flex items-center justify-between text-sm text-gray-300 mb-3">
+                            <span class="bg-gray-700 text-gray-300 px-2 py-1 rounded-full text-xs font-medium">{{ $movie->audience_rating }}</span>
+                            <span class="flex items-center text-gray-400">
                                 <i class="fas fa-clock mr-1"></i>
                                 {{ $movie->duration_minutes }} min
                             </span>
                         </div>
-                        <p class="text-white text-sm line-clamp-3 mb-3">{{ $movie->synopsis }}</p>
-                        <div class="text-xs text-white">
+                        <p class="text-gray-400 text-sm line-clamp-3 mb-3">{{ $movie->synopsis }}</p>
+                        <div class="text-xs text-gray-500">
                             <div class="flex items-center justify-between">
                                 <span>{{ \Carbon\Carbon::parse($movie->release_date)->format('M Y') }}</span>
                                 <span>{{ $movie->producer ?? 'Unknown Producer' }}</span>
@@ -171,14 +173,14 @@
                     </div>
                     
                     <!-- Actions -->
-                    <div class="flex items-center justify-center space-x-3 pt-4 border-t border-gray-100">
+                    <div class="flex items-center justify-center space-x-3 pt-4 border-t border-gray-600">
                         <a href="{{ route('admin.movies.show', $movie) }}" 
-                           class="action-btn bg-blue-100 text-blue-600 hover:bg-blue-200" 
+                           class="action-btn bg-blue-700 text-blue-300 hover:bg-blue-600" 
                            title="View Details">
                             <i class="fas fa-eye"></i>
                         </a>
                         <a href="{{ route('admin.movies.edit', $movie) }}" 
-                           class="action-btn bg-indigo-100 text-indigo-600 hover:bg-indigo-200" 
+                           class="action-btn bg-indigo-700 text-indigo-300 hover:bg-indigo-600" 
                            title="Edit Movie">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -188,7 +190,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit" 
-                                    class="action-btn bg-red-100 text-red-600 hover:bg-red-200" 
+                                    class="action-btn bg-red-700 text-red-300 hover:bg-red-600" 
                                     title="Delete Movie">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -210,11 +212,11 @@
     @else
         <!-- Empty State -->
         <div class="text-center py-16">
-            <div class="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-32 h-32 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-film text-gray-400 text-5xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-4">No Movies Found</h3>
-            <p class="text-gray-600 mb-8 max-w-md mx-auto">
+            <h3 class="text-2xl font-bold text-white mb-4">No Movies Found</h3>
+            <p class="text-gray-400 mb-8 max-w-md mx-auto">
                 Get started by adding your first movie to the catalog. You can manage all your movies from here.
             </p>
             <a href="{{ route('admin.movies.create') }}" class="add-movie-btn inline-flex">

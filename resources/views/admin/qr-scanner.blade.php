@@ -7,18 +7,18 @@
 <style>
     .scanner-container {
         background: #1f2937;
+        border: 1px solid #374151;
         border-radius: 24px;
         padding: 32px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #374151;
     }
     
     .details-container {
         background: #1f2937;
+        border: 1px solid #374151;
         border-radius: 24px;
         padding: 32px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #374151;
     }
     
     .qr-reader-container {
@@ -26,13 +26,13 @@
         border-radius: 20px;
         padding: 32px;
         text-align: center;
-        background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
+        background: #111827;
         transition: all 0.3s ease;
     }
     
     .qr-reader-container:hover {
         border-color: #3b82f6;
-        background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
+        background: #1f2937;
     }
     
     .start-camera-btn {
@@ -71,13 +71,18 @@
     }
     
     .manual-input {
-        background: #1f2937;
+        background: #111827;
         width: 100%;
         padding: 12px 16px;
         border: 2px solid #374151;
+        color: white;
         border-radius: 12px;
         transition: all 0.2s ease;
         font-size: 14px;
+    }
+    
+    .manual-input::placeholder {
+        color: #6b7280;
     }
     
     .manual-input:focus {
@@ -96,8 +101,8 @@
     }
     
     .booking-info-card {
-        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        border: 1px solid #bae6fd;
+        background: #111827;
+        border: 1px solid #2d3748;
         border-radius: 16px;
         padding: 24px;
         margin-bottom: 20px;
@@ -112,12 +117,12 @@
     
     .info-label {
         font-weight: 600;
-        color: #374151;
+        color: #9ca3af;
         font-size: 14px;
     }
     
     .info-value {
-        color: #6b7280;
+        color: #e5e7eb;
         font-size: 14px;
     }
     
@@ -167,17 +172,17 @@
     
     .recent-scans-table {
         background: #1f2937;
+        border: 1px solid #374151;
         border-radius: 20px;
         overflow: hidden;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(229, 231, 235, 0.5);
         margin-top: 32px;
     }
     
     .table-header {
-        background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
+        background: #111827;
         padding: 24px;
-        border-bottom: 1px solid #1f2937;
+        border-bottom: 1px solid #374151;
     }
     
     .empty-state {
@@ -188,7 +193,7 @@
     .empty-icon {
         width: 80px;
         height: 80px;
-        background: linear-gradient(135deg, #374151 0%, #374151 100%);
+        background: #374151;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -214,6 +219,17 @@
         background: transparent !important;
         border-radius: 12px !important;
     }
+
+    .modal-backdrop {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+        background: #1f2937;
+        border: 1px solid #374151;
+        border-radius: 16px;
+    }
 </style>
 @endpush
 
@@ -226,7 +242,7 @@
         </div>
         QR Code Scanner
     </h1>
-    <p class="text-white mt-2">Scan customer QR codes to view booking details and update payment status</p>
+    <p class="text-gray-400 mt-2">Scan customer QR codes to view booking details and update payment status</p>
 </div>
 
 <!-- Main Scanner Section -->
@@ -248,7 +264,7 @@
                         <i class="fas fa-camera text-white text-3xl"></i>
                     </div>
                     <h4 class="text-lg font-semibold text-white mb-4">Ready to Scan</h4>
-                    <p class="text-gray-600 mb-6">Click the button below to start your camera</p>
+                    <p class="text-gray-400 mb-6">Click the button below to start your camera</p>
                     <button id="start-camera" class="start-camera-btn">
                         <i class="fas fa-video mr-3"></i>Start Camera
                     </button>
@@ -257,8 +273,8 @@
         </div>
         
         <!-- Manual Code Input -->
-        <div class="border-t border-gray-200 pt-6">
-            <label for="manual-code" class="block text-sm font-semibold text-white mb-3">
+        <div class="border-t border-gray-600 pt-6">
+            <label for="manual-code" class="block text-sm font-semibold text-gray-300 mb-3">
                 <i class="fas fa-keyboard mr-1"></i>Or enter booking code manually:
             </label>
             <div class="flex space-x-3">
@@ -296,7 +312,7 @@
                 <i class="fas fa-search text-gray-400 text-3xl"></i>
             </div>
             <h4 class="text-lg font-semibold text-white mb-2">No Booking Scanned</h4>
-            <p class="text-gray-600">Scan a QR code or enter a booking code to view details</p>
+            <p class="text-gray-400">Scan a QR code or enter a booking code to view details</p>
         </div>
     </div>
 </div>
@@ -311,29 +327,29 @@
                 </div>
                 <h3 class="text-xl font-semibold text-white">Recent Scans</h3>
             </div>
-            <span class="text-sm text-white">Latest scan activity</span>
+            <span class="text-sm text-gray-400">Latest scan activity</span>
         </div>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full">
-            <thead class="bg-gray">
+            <thead class="bg-gray-800">
                 <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Time</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Code</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Customer</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Movie</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Time</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Code</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Movie</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
-            <tbody id="recent-scans" class="divide-y divide-gray-100">
+            <tbody id="recent-scans" class="divide-y divide-gray-600">
                 <tr>
                     <td colspan="6" class="px-6 py-12 text-center">
                         <div class="empty-icon mx-auto">
                             <i class="fas fa-clock text-gray-400 text-2xl"></i>
                         </div>
-                        <p class="text-white font-medium">No recent scans</p>
-                        <p class="text-white text-sm">Scan history will appear here</p>
+                        <p class="text-gray-300 font-medium">No recent scans</p>
+                        <p class="text-gray-500 text-sm">Scan history will appear here</p>
                     </td>
                 </tr>
             </tbody>
@@ -342,16 +358,16 @@
 </div>
 
 <!-- Status Update Modal -->
-<div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden overflow-y-auto h-full w-full z-50 transition-opacity duration-300">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-2xl rounded-2xl bg-white">
-        <div class="flex justify-between items-center mb-6 pb-4 border-b">
-            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+<div id="statusModal" class="fixed inset-0 modal-backdrop hidden overflow-y-auto h-full w-full z-50 transition-opacity duration-300">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-2xl rounded-2xl modal-content">
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-600">
+            <h3 class="text-xl font-semibold text-white flex items-center">
                 <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                     <i class="fas fa-edit text-white"></i>
                 </div>
                 Update Status
             </h3>
-            <button onclick="closeStatusModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg">
+            <button onclick="closeStatusModal()" class="text-gray-400 hover:text-gray-300 transition-colors p-2 hover:bg-gray-700 rounded-lg">
                 <i class="fas fa-times text-lg"></i>
             </button>
         </div>
@@ -427,8 +443,8 @@ function stopQrScanner() {
                     <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-camera text-white text-3xl"></i>
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Ready to Scan</h4>
-                    <p class="text-gray-600 mb-6">Click the button below to start your camera</p>
+                    <h4 class="text-lg font-semibold text-white mb-4">Ready to Scan</h4>
+                    <p class="text-gray-400 mb-6">Click the button below to start your camera</p>
                     <button id="start-camera" class="start-camera-btn" onclick="startQrScanner()">
                         <i class="fas fa-video mr-3"></i>Start Camera
                     </button>
@@ -490,7 +506,7 @@ function displayBookingDetails(booking) {
     document.getElementById('booking-details').style.display = 'block';
     
     const seatsHtml = booking.seats.map(seat => 
-        `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium mr-1">${seat.row}${seat.number}</span>`
+        `<span class="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full font-medium mr-1">${seat.row}${seat.number}</span>`
     ).join('');
 
     const statusClass = getStatusClass(booking.status);
@@ -500,8 +516,8 @@ function displayBookingDetails(booking) {
         <div class="space-y-6">
             <!-- Customer Information -->
             <div class="booking-info-card">
-                <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-user mr-2 text-blue-600"></i>Customer Information
+                <h4 class="font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-user mr-2 text-blue-400"></i>Customer Information
                 </h4>
                 <div class="info-grid">
                     <span class="info-label">Name:</span>
@@ -509,7 +525,7 @@ function displayBookingDetails(booking) {
                     <span class="info-label">Phone:</span>
                     <span class="info-value">${booking.customer_phone}</span>
                     <span class="info-label">Booking Code:</span>
-                    <span class="info-value font-mono bg-white px-2 py-1 rounded text-sm">${booking.unique_code}</span>
+                    <span class="info-value font-mono bg-gray-800 px-2 py-1 rounded text-sm">${booking.unique_code}</span>
                     <span class="info-label">Status:</span>
                     <span class="info-value">
                         <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusClass}" id="current-status">
@@ -520,9 +536,9 @@ function displayBookingDetails(booking) {
             </div>
 
             <!-- Movie Information -->
-            <div class="booking-info-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #bbf7d0;">
-                <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-film mr-2 text-green-600"></i>Movie & Schedule
+            <div class="booking-info-card">
+                <h4 class="font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-film mr-2 text-green-400"></i>Movie & Schedule
                 </h4>
                 <div class="info-grid">
                     <span class="info-label">Movie:</span>
@@ -552,9 +568,9 @@ function displayBookingDetails(booking) {
             </div>
 
             <!-- Seats & Payment -->
-            <div class="booking-info-card" style="background: linear-gradient(135deg, #fefbff 0%, #f3e8ff 100%); border-color: #d8b4fe;">
-                <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-couch mr-2 text-purple-600"></i>Seats & Payment
+            <div class="booking-info-card">
+                <h4 class="font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-couch mr-2 text-purple-400"></i>Seats & Payment
                 </h4>
                 <div class="info-grid">
                     <span class="info-label">Seats:</span>
@@ -564,7 +580,7 @@ function displayBookingDetails(booking) {
                     <span class="info-label">Total seats:</span>
                     <span class="info-value font-semibold">${booking.seats.length}</span>
                     <span class="info-label">Total amount:</span>
-                    <span class="info-value font-bold text-green-600 text-lg">Rp ${totalAmount.toLocaleString('id-ID')}</span>
+                    <span class="info-value font-bold text-green-400 text-lg">Rp ${totalAmount.toLocaleString('id-ID')}</span>
                 </div>
             </div>
 
@@ -694,8 +710,8 @@ function updateRecentScansTable() {
                     <div class="empty-icon mx-auto">
                         <i class="fas fa-clock text-gray-400 text-2xl"></i>
                     </div>
-                    <p class="text-gray-500 font-medium">No recent scans</p>
-                    <p class="text-gray-400 text-sm">Scan history will appear here</p>
+                    <p class="text-gray-300 font-medium">No recent scans</p>
+                    <p class="text-gray-500 text-sm">Scan history will appear here</p>
                 </td>
             </tr>
         `;
@@ -703,11 +719,11 @@ function updateRecentScansTable() {
     }
     
     tbody.innerHTML = recentScans.map(scan => `
-        <tr class="hover:bg-gray-50/50 transition-colors">
-            <td class="px-6 py-4 text-sm text-gray-900">${scan.time}</td>
-            <td class="px-6 py-4 text-sm font-mono text-gray-900 bg-gray-50 rounded">${scan.code}</td>
-            <td class="px-6 py-4 text-sm font-medium text-gray-900">${scan.customer}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">${scan.movie}</td>
+        <tr class="hover:bg-gray-800 transition-colors">
+            <td class="px-6 py-4 text-sm text-white">${scan.time}</td>
+            <td class="px-6 py-4 text-sm font-mono text-gray-300 bg-gray-800 rounded">${scan.code}</td>
+            <td class="px-6 py-4 text-sm font-medium text-white">${scan.customer}</td>
+            <td class="px-6 py-4 text-sm text-gray-300">${scan.movie}</td>
             <td class="px-6 py-4">
                 <span class="px-2 py-1 text-xs rounded-full font-semibold ${getStatusClass(scan.status)}">
                     ${scan.status.replace('_', ' ').toUpperCase()}
@@ -715,7 +731,7 @@ function updateRecentScansTable() {
             </td>
             <td class="px-6 py-4">
                 <button onclick="fetchBookingDetails('${scan.code}')" 
-                        class="text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded-lg">
+                        class="text-blue-400 hover:text-blue-300 p-2 hover:bg-gray-700 rounded-lg transition-colors">
                     <i class="fas fa-eye"></i>
                 </button>
             </td>
@@ -726,13 +742,13 @@ function updateRecentScansTable() {
 function getStatusClass(status) {
     switch(status) {
         case 'pending_payment':
-            return 'bg-yellow-100 text-yellow-800';
+            return 'bg-yellow-900 text-yellow-300';
         case 'paid':
-            return 'bg-green-100 text-green-800';
+            return 'bg-green-900 text-green-300';
         case 'cancelled':
-            return 'bg-red-100 text-red-800';
+            return 'bg-red-900 text-red-300';
         default:
-            return 'bg-gray-100 text-gray-800';
+            return 'bg-gray-700 text-gray-300';
     }
 }
 

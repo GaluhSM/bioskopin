@@ -14,10 +14,10 @@
 
     .cinema-card {
         background: #1f2937;
+        border: 1px solid #374151;
         border-radius: 20px;
         padding: 28px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(229, 231, 235, 0.5);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -29,11 +29,13 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
+        height: 3px;
         background: linear-gradient(90deg, #667eea, #764ba2);
     }
     
     .cinema-card:hover {
+        background: #243447;
+        border-color: #4b5563;
         transform: translateY(-4px);
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
     }
@@ -105,7 +107,7 @@
                 </div>
                 Cinemas Management
             </h1>
-            <p class="text-white mt-2">Manage all cinema locations and facilities</p>
+            <p class="text-gray-400 mt-2">Manage all cinema locations and facilities</p>
         </div>
         <a href="{{ route('admin.cinemas.create') }}" class="add-cinema-btn">
             <i class="fas fa-plus mr-2"></i>Add New Cinema
@@ -133,7 +135,7 @@
                 <!-- Cinema Info -->
                 <div class="mb-6">
                     <h3 class="text-xl font-bold text-white mb-3">{{ $cinema->name }}</h3>
-                    <div class="flex items-start text-white mb-4">
+                    <div class="flex items-start text-gray-300 mb-4">
                         <i class="fas fa-map-marker-alt mr-2 mt-1 text-gray-400"></i>
                         <p class="text-sm leading-relaxed">{{ $cinema->location }}</p>
                     </div>
@@ -144,21 +146,21 @@
                             <i class="fas fa-door-open mr-2"></i>
                             {{ $cinema->studios_count ?? 0 }} Studios
                         </span>
-                        <span class="text-xs text-white">
+                        <span class="text-xs text-gray-400">
                             Created {{ $cinema->created_at->format('M j, Y') }}
                         </span>
                     </div>
                 </div>
                 
                 <!-- Actions -->
-                <div class="flex items-center justify-center space-x-3 pt-6 border-t border-gray-100">
+                <div class="flex items-center justify-center space-x-3 pt-6 border-t border-gray-600">
                     <a href="{{ route('admin.cinemas.show', $cinema) }}" 
-                       class="action-btn bg-blue-100 text-blue-600 hover:bg-blue-200" 
+                       class="action-btn bg-blue-700 text-blue-300 hover:bg-blue-600" 
                        title="View Details">
                         <i class="fas fa-eye"></i>
                     </a>
                     <a href="{{ route('admin.cinemas.edit', $cinema) }}" 
-                       class="action-btn bg-indigo-100 text-indigo-600 hover:bg-indigo-200" 
+                       class="action-btn bg-indigo-700 text-indigo-300 hover:bg-indigo-600" 
                        title="Edit Cinema">
                         <i class="fas fa-edit"></i>
                     </a>
@@ -168,7 +170,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" 
-                                class="action-btn bg-red-100 text-red-600 hover:bg-red-200" 
+                                class="action-btn bg-red-700 text-red-300 hover:bg-red-600" 
                                 title="Delete Cinema">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -189,11 +191,11 @@
     @else
         <!-- Empty State -->
         <div class="text-center py-16">
-            <div class="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-32 h-32 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-building text-gray-400 text-5xl"></i>
             </div>
             <h3 class="text-2xl font-bold text-white mb-4">No Cinemas Found</h3>
-            <p class="text-white mb-8 max-w-md mx-auto">
+            <p class="text-gray-400 mb-8 max-w-md mx-auto">
                 Start by adding your first cinema location. You can manage all cinema facilities and studios from here.
             </p>
             <a href="{{ route('admin.cinemas.create') }}" class="add-cinema-btn inline-flex">
