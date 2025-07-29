@@ -6,33 +6,33 @@
 @push('styles')
 <style>
     .scanner-container {
-        background: white;
+        background: #1f2937;
         border-radius: 24px;
         padding: 32px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(229, 231, 235, 0.5);
+        border: 1px solid #374151;
     }
     
     .details-container {
-        background: white;
+        background: #1f2937;
         border-radius: 24px;
         padding: 32px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(229, 231, 235, 0.5);
+        border: 1px solid #374151;
     }
     
     .qr-reader-container {
-        border: 3px dashed #d1d5db;
+        border: 3px dashed #374151;
         border-radius: 20px;
         padding: 32px;
         text-align: center;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
         transition: all 0.3s ease;
     }
     
     .qr-reader-container:hover {
         border-color: #3b82f6;
-        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
     }
     
     .start-camera-btn {
@@ -55,7 +55,7 @@
     }
     
     .search-btn {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
         color: white;
         padding: 12px 20px;
         border-radius: 12px;
@@ -67,13 +67,14 @@
     
     .search-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
     }
     
     .manual-input {
+        background: #1f2937;
         width: 100%;
         padding: 12px 16px;
-        border: 2px solid #e5e7eb;
+        border: 2px solid #374151;
         border-radius: 12px;
         transition: all 0.2s ease;
         font-size: 14px;
@@ -165,7 +166,7 @@
     }
     
     .recent-scans-table {
-        background: white;
+        background: #1f2937;
         border-radius: 20px;
         overflow: hidden;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -174,9 +175,9 @@
     }
     
     .table-header {
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        background: linear-gradient(135deg, #1f2937 0%, #1f2937 100%);
         padding: 24px;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid #1f2937;
     }
     
     .empty-state {
@@ -187,7 +188,7 @@
     .empty-icon {
         width: 80px;
         height: 80px;
-        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        background: linear-gradient(135deg, #374151 0%, #374151 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -219,13 +220,13 @@
 @section('content')
 <!-- Header -->
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800 flex items-center">
+    <h1 class="text-3xl font-bold text-white flex items-center">
         <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mr-4">
             <i class="fas fa-qrcode text-white text-xl"></i>
         </div>
         QR Code Scanner
     </h1>
-    <p class="text-gray-600 mt-2">Scan customer QR codes to view booking details and update payment status</p>
+    <p class="text-white mt-2">Scan customer QR codes to view booking details and update payment status</p>
 </div>
 
 <!-- Main Scanner Section -->
@@ -236,7 +237,7 @@
             <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-camera text-white"></i>
             </div>
-            <h3 class="text-xl font-semibold text-gray-800">Camera Scanner</h3>
+            <h3 class="text-xl font-semibold text-white">Camera Scanner</h3>
         </div>
         
         <!-- Camera Scanner -->
@@ -246,7 +247,7 @@
                     <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-camera text-white text-3xl"></i>
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Ready to Scan</h4>
+                    <h4 class="text-lg font-semibold text-white mb-4">Ready to Scan</h4>
                     <p class="text-gray-600 mb-6">Click the button below to start your camera</p>
                     <button id="start-camera" class="start-camera-btn">
                         <i class="fas fa-video mr-3"></i>Start Camera
@@ -257,8 +258,8 @@
         
         <!-- Manual Code Input -->
         <div class="border-t border-gray-200 pt-6">
-            <label for="manual-code" class="block text-sm font-semibold text-gray-700 mb-3">
-                <i class="fas fa-keyboard mr-2"></i>Or enter booking code manually:
+            <label for="manual-code" class="block text-sm font-semibold text-white mb-3">
+                <i class="fas fa-keyboard mr-1"></i>Or enter booking code manually:
             </label>
             <div class="flex space-x-3">
                 <input type="text" 
@@ -283,7 +284,7 @@
             <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-ticket-alt text-white"></i>
             </div>
-            <h3 class="text-xl font-semibold text-gray-800">Booking Details</h3>
+            <h3 class="text-xl font-semibold text-white">Booking Details</h3>
         </div>
         
         <div id="booking-details" class="hidden">
@@ -294,7 +295,7 @@
             <div class="empty-icon">
                 <i class="fas fa-search text-gray-400 text-3xl"></i>
             </div>
-            <h4 class="text-lg font-semibold text-gray-800 mb-2">No Booking Scanned</h4>
+            <h4 class="text-lg font-semibold text-white mb-2">No Booking Scanned</h4>
             <p class="text-gray-600">Scan a QR code or enter a booking code to view details</p>
         </div>
     </div>
@@ -308,21 +309,21 @@
                 <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                     <i class="fas fa-history text-white"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-800">Recent Scans</h3>
+                <h3 class="text-xl font-semibold text-white">Recent Scans</h3>
             </div>
-            <span class="text-sm text-gray-500">Latest scan activity</span>
+            <span class="text-sm text-white">Latest scan activity</span>
         </div>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full">
-            <thead class="bg-gray-50/50">
+            <thead class="bg-gray">
                 <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Code</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Movie</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Time</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Code</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Movie</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
             <tbody id="recent-scans" class="divide-y divide-gray-100">
@@ -331,8 +332,8 @@
                         <div class="empty-icon mx-auto">
                             <i class="fas fa-clock text-gray-400 text-2xl"></i>
                         </div>
-                        <p class="text-gray-500 font-medium">No recent scans</p>
-                        <p class="text-gray-400 text-sm">Scan history will appear here</p>
+                        <p class="text-white font-medium">No recent scans</p>
+                        <p class="text-white text-sm">Scan history will appear here</p>
                     </td>
                 </tr>
             </tbody>

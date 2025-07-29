@@ -8,94 +8,104 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        /* Custom gradient and animations */
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        
+        .sidebar {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-right: 1px solid #334155;
         }
-        .hover-lift {
-            transition: transform 0.2s ease-in-out;
-        }
-        .hover-lift:hover {
-            transform: translateY(-2px);
-        }
+        
         .nav-item {
             position: relative;
-            overflow: hidden;
+            transition: all 0.2s ease;
         }
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
+        
+        .nav-item:hover {
+            background: rgba(51, 65, 85, 0.5);
         }
-        .nav-item.active::before {
-            transform: scaleY(1);
+        
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 3px solid #3b82f6;
         }
-        .sidebar {
-            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+        
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--icon-bg, rgba(75, 85, 99, 0.5));
         }
-        .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(229, 231, 235, 0.8);
+        
+        .header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #334155;
         }
-        .status-badge {
-            background: linear-gradient(45deg, var(--from), var(--to));
-        }
-        .primary-button {
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .primary-button:hover {
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
         }
     </style>
     @stack('styles')
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+<body>
     <!-- Sidebar -->
-    <div class="fixed inset-y-0 left-0 z-50 w-64 sidebar transform -translate-x-full lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300" id="sidebar">
-        <!-- Logo Section -->
-        <div class="flex items-center justify-center h-20 glass-effect border-b border-gray-700">
+    <div class="fixed inset-y-0 left-0 z-50 w-64 sidebar">
+        <!-- Logo -->
+        <div class="flex items-center justify-center h-20 border-b border-slate-700">
             <div class="text-center">
                 <h1 class="text-white text-xl font-bold flex items-center">
-                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-crown text-white text-lg"></i>
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-crown text-white"></i>
                     </div>
                     Admin Panel
                 </h1>
-                <p class="text-gray-400 text-xs mt-1">Cinema Management</p>
+                <p class="text-slate-400 text-xs mt-1">Cinema Management System</p>
             </div>
         </div>
         
         <!-- Navigation -->
-        <nav class="mt-8 px-4">
-            <!-- Main Menu -->
-            <div class="mb-6">
-                <p class="text-gray-400 text-xs uppercase tracking-wide font-semibold mb-4 px-4">Overview</p>
+        <nav class="mt-6 px-4">
+            <!-- Overview Section -->
+            <div class="mb-8">
+                <p class="text-slate-500 text-xs uppercase tracking-wide font-semibold mb-4 px-3">Overview</p>
+                
                 <a href="{{ route('admin.dashboard') }}" 
-                   class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }} flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-xl mb-2 transition-all duration-200 hover-lift">
-                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-chart-bar text-white"></i>
+                   class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }} flex items-center px-3 py-3 text-slate-300 rounded-lg mb-2">
+                    <div class="nav-icon mr-3" style="--icon-bg: rgba(59, 130, 246, 0.2);">
+                        <i class="fas fa-chart-pie text-blue-400"></i>
                     </div>
                     <span class="font-medium">Dashboard</span>
                 </a>
+                
                 <a href="{{ route('admin.qr-scanner') }}" 
-                   class="nav-item {{ request()->routeIs('admin.qr-scanner') ? 'active' : '' }} flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-xl mb-2 transition-all duration-200 hover-lift">
-                    <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-qrcode text-white"></i>
+                   class="nav-item {{ request()->routeIs('admin.qr-scanner') ? 'active' : '' }} flex items-center px-3 py-3 text-slate-300 rounded-lg mb-2">
+                    <div class="nav-icon mr-3" style="--icon-bg: rgba(16, 185, 129, 0.2);">
+                        <i class="fas fa-qrcode text-green-400"></i>
                     </div>
                     <span class="font-medium">QR Scanner</span>
                 </a>
@@ -103,44 +113,44 @@
             
             <!-- Management Section -->
             <div>
-                <p class="text-gray-400 text-xs uppercase tracking-wide font-semibold mb-4 px-4">Management</p>
+                <p class="text-slate-500 text-xs uppercase tracking-wide font-semibold mb-4 px-3">Management</p>
                 
                 <a href="{{ route('admin.movies.index') }}" 
-                   class="nav-item {{ request()->routeIs('admin.movies.*') ? 'active' : '' }} flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-xl mb-2 transition-all duration-200 hover-lift">
-                    <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-film text-white"></i>
+                   class="nav-item {{ request()->routeIs('admin.movies.*') ? 'active' : '' }} flex items-center px-3 py-3 text-slate-300 rounded-lg mb-2">
+                    <div class="nav-icon mr-3" style="--icon-bg: rgba(239, 68, 68, 0.2);">
+                        <i class="fas fa-film text-red-400"></i>
                     </div>
                     <span class="font-medium">Movies</span>
                 </a>
                 
                 <a href="{{ route('admin.cinemas.index') }}" 
-                   class="nav-item {{ request()->routeIs('admin.cinemas.*') ? 'active' : '' }} flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-xl mb-2 transition-all duration-200 hover-lift">
-                    <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-building text-white"></i>
+                   class="nav-item {{ request()->routeIs('admin.cinemas.*') ? 'active' : '' }} flex items-center px-3 py-3 text-slate-300 rounded-lg mb-2">
+                    <div class="nav-icon mr-3" style="--icon-bg: rgba(139, 92, 246, 0.2);">
+                        <i class="fas fa-building text-purple-400"></i>
                     </div>
                     <span class="font-medium">Cinemas</span>
                 </a>
                 
                 <a href="{{ route('admin.studios.index') }}" 
-                   class="nav-item {{ request()->routeIs('admin.studios.*') ? 'active' : '' }} flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-xl mb-2 transition-all duration-200 hover-lift">
-                    <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-door-open text-white"></i>
+                   class="nav-item {{ request()->routeIs('admin.studios.*') ? 'active' : '' }} flex items-center px-3 py-3 text-slate-300 rounded-lg mb-2">
+                    <div class="nav-icon mr-3" style="--icon-bg: rgba(6, 182, 212, 0.2);">
+                        <i class="fas fa-door-open text-cyan-400"></i>
                     </div>
                     <span class="font-medium">Studios</span>
                 </a>
                 
                 <a href="{{ route('admin.schedules.index') }}" 
-                   class="nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }} flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-xl mb-2 transition-all duration-200 hover-lift">
-                    <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-calendar text-white"></i>
+                   class="nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }} flex items-center px-3 py-3 text-slate-300 rounded-lg mb-2">
+                    <div class="nav-icon mr-3" style="--icon-bg: rgba(245, 158, 11, 0.2);">
+                        <i class="fas fa-calendar text-amber-400"></i>
                     </div>
                     <span class="font-medium">Schedules</span>
                 </a>
                 
                 <a href="{{ route('admin.bookings.index') }}" 
-                   class="nav-item {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }} flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-xl mb-2 transition-all duration-200 hover-lift">
-                    <div class="w-10 h-10 bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-ticket-alt text-white"></i>
+                   class="nav-item {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }} flex items-center px-3 py-3 text-slate-300 rounded-lg mb-2">
+                    <div class="nav-icon mr-3" style="--icon-bg: rgba(236, 72, 153, 0.2);">
+                        <i class="fas fa-ticket-alt text-pink-400"></i>
                     </div>
                     <span class="font-medium">Bookings</span>
                 </a>
@@ -149,42 +159,38 @@
     </div>
 
     <!-- Main Content -->
-    <div class="lg:ml-64">
-        <!-- Top Navigation -->
-        <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 sticky top-0 z-40">
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="header sticky top-0 z-40">
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="flex items-center space-x-4">
-                    <button class="lg:hidden text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors" onclick="toggleSidebar()">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                    
                     <!-- Breadcrumb -->
-                    <nav class="hidden md:flex items-center space-x-2 text-sm">
-                        <i class="fas fa-home text-gray-400"></i>
-                        <span class="text-gray-500">Admin</span>
-                        <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
-                        <span class="text-gray-700 font-medium">@yield('page-title', 'Dashboard')</span>
+                    <nav class="flex items-center space-x-2 text-sm">
+                        <i class="fas fa-home text-slate-400"></i>
+                        <span class="text-slate-500">Admin</span>
+                        <i class="fas fa-chevron-right text-slate-600 text-xs"></i>
+                        <span class="text-slate-300 font-medium">@yield('page-title', 'Dashboard')</span>
                     </nav>
                 </div>
                 
                 <div class="flex items-center space-x-4">
                     <!-- User Info -->
-                    <div class="hidden md:flex items-center space-x-3">
+                    <div class="flex items-center space-x-3">
                         <div class="text-right">
-                            <p class="text-sm font-medium text-gray-700">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-gray-500">Administrator</p>
+                            <p class="text-sm font-medium text-slate-200">{{ Auth::user()->name }}</p>
+                            <p class="text-xs text-slate-400">Administrator</p>
                         </div>
-                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <div class="user-avatar">
                             <i class="fas fa-user text-white text-sm"></i>
                         </div>
                     </div>
                     
-                    <!-- Logout Button -->
+                    <!-- Logout -->
                     <form action="{{ route('admin.logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg text-sm transition-all duration-200 hover-lift flex items-center space-x-2">
+                        <button type="submit" class="btn-primary text-white px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
                             <i class="fas fa-sign-out-alt"></i>
-                            <span class="hidden sm:inline">Logout</span>
+                            <span>Logout</span>
                         </button>
                     </form>
                 </div>
@@ -197,19 +203,6 @@
         </main>
     </div>
 
-    <!-- Mobile sidebar overlay -->
-    <div class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden hidden transition-opacity duration-300" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
     @stack('scripts')
-    
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
-    </script>
 </body>
 </html>
