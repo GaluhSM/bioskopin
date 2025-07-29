@@ -21,8 +21,8 @@ class MovieFactory extends Factory
 
         return [
             'title' => ucwords($title),
-            'synopsis' => $this->faker->paragraph(5),
-            'poster_url' => "https://placehold.co/300x450.png?text={$titleSlug}",
+            'synopsis' => $this->faker->paragraph(20),
+            'poster_url' => "https://placehold.co/300x450/808080/FFFFFF/png?text={$titleSlug}",
             'duration_minutes' => $this->faker->numberBetween(90, 180),
             'release_date' => $this->faker->date(),
             'audience_rating' => $this->faker->randomElement(['G', 'PG', 'PG-13', 'R']),
