@@ -244,9 +244,7 @@
                     <i class="fas fa-money-bill-wave text-white"></i>
                 </div>
                 <div class="text-xl font-bold text-white mb-1">
-                    Rp {{ number_format($recentBookings->where('created_at', '>=', today())->sum(function($booking) {
-                        return $booking->schedule->price * $booking->seats->count();
-                    }), 0, ',', '.') }}
+                    Rp {{ number_format($todayRevenue, 0, ',', '.') }}
                 </div>
                 <div class="text-gray-400 text-sm">Revenue Today</div>
             </div>
@@ -256,7 +254,7 @@
                     <i class="fas fa-couch text-white"></i>
                 </div>
                 <div class="text-2xl font-bold text-white mb-1">
-                    {{ $recentBookings->where('created_at', '>=', today())->sum(function($booking) {
+                    {{ $recentBookings->where('created_at', '>=', today())->where('status', 'paid')->sum(function($booking) {
                         return $booking->seats->count();
                     }) }}
                 </div>

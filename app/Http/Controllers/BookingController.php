@@ -16,10 +16,16 @@ class BookingController extends Controller
         $scheduleId = $request->get('schedule_id');
         $schedule = Schedule::with(['movie', 'studio.cinema'])->findOrFail($scheduleId);
         
-        // Get available seats for this schedule
+        // Get booked seat IDs - ONLY from non-cancelled bookings
         $bookedSeatIds = Booking::whereHas('schedule', function($query) use ($scheduleId) {
             $query->where('id', $scheduleId);
-        })->with('seats')->get()->pluck('seats')->flatten()->pluck('id');
+        })
+        ->whereIn('status', ['pending_payment', 'paid']) // Only active bookings
+        ->with('seats')
+        ->get()
+        ->pluck('seats')
+        ->flatten()
+        ->pluck('id');
         
         $availableSeats = Seat::where('studio_id', $schedule->studio_id)
                              ->whereNotIn('id', $bookedSeatIds)
@@ -47,10 +53,16 @@ class BookingController extends Controller
             'seat_ids.*' => 'exists:seats,id'
         ]);
 
-        // Check if seats are still available
+        // Check if seats are still available - ONLY check non-cancelled bookings
         $bookedSeatIds = Booking::whereHas('schedule', function($query) use ($request) {
             $query->where('id', $request->schedule_id);
-        })->with('seats')->get()->pluck('seats')->flatten()->pluck('id');
+        })
+        ->whereIn('status', ['pending_payment', 'paid']) // Only active bookings
+        ->with('seats')
+        ->get()
+        ->pluck('seats')
+        ->flatten()
+        ->pluck('id');
         
         $conflictingSeats = array_intersect($request->seat_ids, $bookedSeatIds->toArray());
         if (!empty($conflictingSeats)) {

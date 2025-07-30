@@ -25,7 +25,7 @@ class AdminController extends Controller
                                 ->take(10)
                                 ->get();
 
-        // Today's revenue
+        // Today's revenue - ONLY from PAID bookings
         $todayRevenue = Booking::where('status', 'paid')
             ->whereDate('created_at', now())
             ->with(['schedule', 'seats'])
@@ -34,7 +34,7 @@ class AdminController extends Controller
                 return $booking->schedule->price * $booking->seats->count();
             });
 
-        // This month's revenue
+        // This month's revenue - ONLY from PAID bookings
         $monthRevenue = Booking::where('status', 'paid')
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)

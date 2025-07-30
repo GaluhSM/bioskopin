@@ -66,16 +66,24 @@
                     <div id="seat-map" class="space-y-3 mb-6">
                         @php
                             $seatsByRow = $availableSeats->groupBy('row');
+                            // Get booked seat IDs - ONLY from non-cancelled bookings
                             $bookedSeatIds = \App\Models\Booking::whereHas('schedule', function($query) use ($schedule) {
                                 $query->where('id', $schedule->id);
-                            })->with('seats')->get()->pluck('seats')->flatten()->pluck('id')->toArray();
+                            })
+                            ->whereIn('status', ['pending_payment', 'paid']) // Only active bookings
+                            ->with('seats')
+                            ->get()
+                            ->pluck('seats')
+                            ->flatten()
+                            ->pluck('id')
+                            ->toArray();
                             
                             // Get all seats for this studio to show booked ones
                             $allSeats = \App\Models\Seat::where('studio_id', $schedule->studio_id)
-                                                      ->orderBy('row')
-                                                      ->orderBy('number')
-                                                      ->get()
-                                                      ->groupBy('row');
+                                                    ->orderBy('row')
+                                                    ->orderBy('number')
+                                                    ->get()
+                                                    ->groupBy('row');
                         @endphp
                         
                         @foreach($allSeats as $row => $seats)
@@ -87,7 +95,7 @@
                                     @endphp
                                     <button type="button" 
                                             class="seat-btn w-8 h-8 rounded text-xs font-bold transition-all duration-200
-                                                   {{ $isBooked ? 'bg-red-600 text-white cursor-not-allowed' : 'bg-gray-600 hover:bg-blue-500 text-white' }}"
+                                                {{ $isBooked ? 'bg-red-600 text-white cursor-not-allowed' : 'bg-gray-600 hover:bg-blue-500 text-white' }}"
                                             data-seat-id="{{ $seat->id }}"
                                             data-seat-label="{{ $seat->row }}{{ $seat->number }}"
                                             {{ $isBooked ? 'disabled' : '' }}>
