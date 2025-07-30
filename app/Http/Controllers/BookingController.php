@@ -32,6 +32,13 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
+        // Convert comma-separated string to array if needed
+        $seatIds = $request->seat_ids;
+        if (is_string($seatIds)) {
+            $seatIds = array_filter(explode(',', $seatIds));
+            $request->merge(['seat_ids' => $seatIds]);
+        }
+
         $request->validate([
             'schedule_id' => 'required|exists:schedules,id',
             'customer_name' => 'required|string|max:255',
@@ -47,7 +54,17 @@ class BookingController extends Controller
         
         $conflictingSeats = array_intersect($request->seat_ids, $bookedSeatIds->toArray());
         if (!empty($conflictingSeats)) {
-            return back()->withErrors('Some selected seats are no longer available.');
+            return back()->withErrors(['seat_ids' => 'Some selected seats are no longer available.'])->withInput();
+        }
+
+        // Validate seat belongs to the correct studio
+        $schedule = Schedule::findOrFail($request->schedule_id);
+        $validSeats = Seat::where('studio_id', $schedule->studio_id)
+                         ->whereIn('id', $request->seat_ids)
+                         ->count();
+        
+        if ($validSeats !== count($request->seat_ids)) {
+            return back()->withErrors(['seat_ids' => 'Invalid seat selection.'])->withInput();
         }
 
         // Create booking

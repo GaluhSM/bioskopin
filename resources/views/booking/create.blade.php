@@ -69,18 +69,28 @@
                             $bookedSeatIds = \App\Models\Booking::whereHas('schedule', function($query) use ($schedule) {
                                 $query->where('id', $schedule->id);
                             })->with('seats')->get()->pluck('seats')->flatten()->pluck('id')->toArray();
+                            
+                            // Get all seats for this studio to show booked ones
+                            $allSeats = \App\Models\Seat::where('studio_id', $schedule->studio_id)
+                                                      ->orderBy('row')
+                                                      ->orderBy('number')
+                                                      ->get()
+                                                      ->groupBy('row');
                         @endphp
                         
-                        @foreach($seatsByRow as $row => $seats)
+                        @foreach($allSeats as $row => $seats)
                             <div class="flex items-center justify-center space-x-2">
                                 <span class="text-white font-bold w-8 text-center">{{ $row }}</span>
                                 @foreach($seats as $seat)
+                                    @php
+                                        $isBooked = in_array($seat->id, $bookedSeatIds);
+                                    @endphp
                                     <button type="button" 
                                             class="seat-btn w-8 h-8 rounded text-xs font-bold transition-all duration-200
-                                                   {{ in_array($seat->id, $bookedSeatIds) ? 'bg-red-600 text-white cursor-not-allowed' : 'bg-gray-600 hover:bg-blue-500 text-white' }}"
+                                                   {{ $isBooked ? 'bg-red-600 text-white cursor-not-allowed' : 'bg-gray-600 hover:bg-blue-500 text-white' }}"
                                             data-seat-id="{{ $seat->id }}"
                                             data-seat-label="{{ $seat->row }}{{ $seat->number }}"
-                                            {{ in_array($seat->id, $bookedSeatIds) ? 'disabled' : '' }}>
+                                            {{ $isBooked ? 'disabled' : '' }}>
                                         {{ $seat->number }}
                                     </button>
                                 @endforeach
@@ -114,7 +124,8 @@
                     <form action="{{ route('booking.store') }}" method="POST" id="booking-form">
                         @csrf
                         <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
-                        <input type="hidden" name="seat_ids" id="seat-ids" value="">
+                        <!-- Multiple hidden inputs for seat IDs -->
+                        <div id="seat-inputs-container"></div>
                         
                         <!-- Selected Seats -->
                         <div class="mb-6">
@@ -196,10 +207,15 @@
 </div>
 
 @if($errors->any())
-    <div class="fixed top-4 right-4 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg z-50">
-        <div class="flex items-center">
-            <i class="fas fa-exclamation-triangle mr-2"></i>
-            <span>{{ $errors->first() }}</span>
+    <div class="fixed top-4 right-4 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg z-50" id="error-message">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <span>{{ $errors->first() }}</span>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-300">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     </div>
 @endif
@@ -209,6 +225,25 @@
 document.addEventListener('DOMContentLoaded', function() {
     const seatPrice = {{ $schedule->price }};
     let selectedSeats = [];
+    
+    // Restore selected seats from old input if validation failed
+    @if(old('seat_ids'))
+        const oldSeatIds = @json(old('seat_ids'));
+        if (Array.isArray(oldSeatIds)) {
+            oldSeatIds.forEach(seatId => {
+                const seatBtn = document.querySelector(`[data-seat-id="${seatId}"]`);
+                if (seatBtn && !seatBtn.disabled) {
+                    seatBtn.classList.remove('bg-gray-600');
+                    seatBtn.classList.add('bg-blue-500');
+                    selectedSeats.push({
+                        id: seatId,
+                        label: seatBtn.dataset.seatLabel
+                    });
+                }
+            });
+            updateBookingSummary();
+        }
+    @endif
     
     // Seat selection
     document.querySelectorAll('.seat-btn:not([disabled])').forEach(button => {
@@ -224,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 // Select seat (max 8 seats)
                 if (selectedSeats.length >= 8) {
-                    alert('Maximum 8 seats can be selected at once.');
+                    showNotification('Maximum 8 seats can be selected at once.', 'warning');
                     return;
                 }
                 this.classList.remove('bg-gray-600');
@@ -256,8 +291,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('seat-count').textContent = seatCount;
         document.getElementById('total-price').textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
         
-        // Update form
-        document.getElementById('seat-ids').value = selectedSeats.map(seat => seat.id).join(',');
+        // Update form - create multiple hidden inputs for array
+        const container = document.getElementById('seat-inputs-container');
+        container.innerHTML = '';
+        selectedSeats.forEach(seat => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'seat_ids[]';
+            input.value = seat.id;
+            container.appendChild(input);
+        });
         
         // Enable/disable submit button
         const submitBtn = document.getElementById('submit-btn');
@@ -274,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('booking-form').addEventListener('submit', function(e) {
         if (selectedSeats.length === 0) {
             e.preventDefault();
-            alert('Please select at least one seat.');
+            showNotification('Please select at least one seat.', 'error');
             return;
         }
         
@@ -283,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!customerName || !customerPhone) {
             e.preventDefault();
-            alert('Please fill in all customer information.');
+            showNotification('Please fill in all customer information.', 'error');
             return;
         }
         
@@ -302,8 +345,42 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.value = value;
     });
     
-    // Auto-hide error message
-    const errorDiv = document.querySelector('.fixed.top-4.right-4.bg-red-600');
+    // Notification function
+    function showNotification(message, type = 'info') {
+        const colors = {
+            error: 'bg-red-600',
+            warning: 'bg-yellow-600',
+            success: 'bg-green-600',
+            info: 'bg-blue-600'
+        };
+        
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg z-50`;
+        notification.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span>${message}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 5000);
+    }
+    
+    // Auto-hide existing error message
+    const errorDiv = document.getElementById('error-message');
     if (errorDiv) {
         setTimeout(() => {
             errorDiv.style.opacity = '0';
@@ -330,6 +407,21 @@ document.addEventListener('DOMContentLoaded', function() {
         height: 1.5rem;
         font-size: 0.625rem;
     }
+}
+
+/* Smooth transitions */
+.seat-btn {
+    transition: all 0.2s ease;
+}
+
+/* Loading animation */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.fa-spin {
+    animation: spin 1s linear infinite;
 }
 </style>
 @endpush
