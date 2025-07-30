@@ -198,7 +198,7 @@
             </div>
         </a>
         
-        <a href="#" class="action-item" style="--accent-color: #10b981;">
+        <a href="{{ route('admin.movies.create') }}" class="action-item" style="--accent-color: #10b981;">
             <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-4">
                 <i class="fas fa-plus text-white"></i>
             </div>
@@ -208,7 +208,7 @@
             </div>
         </a>
         
-        <a href="#" class="action-item" style="--accent-color: #8b5cf6;">
+        <a href="{{ route('admin.schedules.create') }}" class="action-item" style="--accent-color: #8b5cf6;">
             <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
                 <i class="fas fa-calendar-plus text-white"></i>
             </div>

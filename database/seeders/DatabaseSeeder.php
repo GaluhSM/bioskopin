@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
             CinemaSeeder::class,
         ]);
 
-        Movie::factory(20)->create();
+        Movie::factory(150)->create();
 
-        Schedule::factory(50)->create();
+        Schedule::factory(600)->create();
     }
 }

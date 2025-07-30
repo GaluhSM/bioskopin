@@ -11,8 +11,8 @@ class CinemaSeeder extends Seeder
 {
     public function run(): void
     {
-        Cinema::factory(3)->create()->each(function ($cinema) {
-            Studio::factory(4)->create(['cinema_id' => $cinema->id])->each(function ($studio) {
+        Cinema::factory(10)->create()->each(function ($cinema) {
+            Studio::factory(7)->create(['cinema_id' => $cinema->id])->each(function ($studio) {
                 $rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
                 $seatsPerRow = $studio->capacity / count($rows);
 

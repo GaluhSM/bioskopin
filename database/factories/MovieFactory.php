@@ -23,13 +23,13 @@ class MovieFactory extends Factory
             'title' => ucwords($title),
             'synopsis' => $this->faker->paragraph(20),
             'poster_url' => "https://placehold.co/300x450/808080/FFFFFF/png?text={$titleSlug}",
-            'duration_minutes' => $this->faker->numberBetween(90, 180),
+            'duration_minutes' => $this->faker->numberBetween(57, 360),
             'release_date' => $this->faker->date(),
             'audience_rating' => $this->faker->randomElement(['G', 'PG', 'PG-13', 'R']),
             'producer' => $this->ucwordsCompany(),
             'publisher' => $this->ucwordsCompany(),
             'is_trending' => $this->faker->boolean(20),
-            'rating' => $this->faker->randomFloat(1, 7, 9.5),
+            'rating' => $this->faker->randomFloat(1, 6, 9.9),
         ];
     }
 }

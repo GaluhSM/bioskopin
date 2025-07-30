@@ -84,6 +84,13 @@ class MoviesController extends Controller
             $data['poster_url'] = $request->file('poster')->store('posters', 'public');
         }
 
+        if ($request->has('remove_poster')) {
+            if ($movie->poster_url) {
+                Storage::disk('public')->delete($movie->poster_url);
+            }
+            $data['poster_url'] = null;
+        }
+
         $movie->update($data);
 
         return redirect()->route('admin.movies.index')

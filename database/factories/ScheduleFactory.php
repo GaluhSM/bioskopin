@@ -19,7 +19,7 @@ class ScheduleFactory extends Factory
             'studio_id' => Studio::inRandomOrder()->first()->id,
             'start_time' => $startTime,
             'end_time' => (clone $startTime)->addMinutes($movie->duration_minutes),
-            'price' => $this->faker->randomElement([35000, 40000, 50000, 65000]),
+            'price' => $this->faker->randomElement([15000, 20000, 35000, 40000, 50000, 65000, 80000, 100000, 125000, 150000, 200000, 300000, 350000, 380000]),
         ];
     }
 }
