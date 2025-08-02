@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Bioskopin' }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    {{ $styles ?? '' }}
-</head>
-<body class="bg-gray-900 text-white min-h-screen">
+<x-layout.head :title="$title" :styles="$styles ?? ''" />
+<x-layout.body>
     <x-navigation />
-
+    
     <main class="flex-grow">
         {{ $slot }}
     </main>
@@ -18,5 +11,5 @@
     <x-footer />
 
     {{ $scripts ?? '' }}
-</body>
+</x-layout.body>
 </html>
