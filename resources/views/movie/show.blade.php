@@ -96,7 +96,7 @@
                 @foreach($groupedSchedules as $date => $dateSchedules)
                     <div class="bg-gray-800 rounded-lg p-6">
                         <h3 class="text-xl font-bold mb-4 text-blue-400">
-                            {{ \Carbon\Carbon::parse($date)->format('l, F j, Y') }}
+                            {{ \Carbon\Carbon::parse($date)->format('l, j F Y') }}
                         </h3>
                         
                         @php
@@ -131,7 +131,7 @@
                                             
                                             <a href="{{ route('booking.create', ['schedule_id' => $schedule->id]) }}" 
                                                class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg transition-colors">
-                                                <i class="fas fa-ticket-alt mr-2"></i>Book Now
+                                                <i class="fas fa-ticket-alt mr-2"></i>Pesan Sekarang
                                             </a>
                                         </div>
                                     @endforeach
@@ -144,10 +144,10 @@
         @else
             <div class="text-center py-16 bg-gray-800 rounded-lg">
                 <i class="fas fa-calendar-times text-6xl text-gray-600 mb-4"></i>
-                <h3 class="text-2xl font-semibold mb-2">No Showtimes Available</h3>
-                <p class="text-gray-400 mb-6">This movie currently has no scheduled showtimes.</p>
+                <h3 class="text-2xl font-semibold mb-2">Tidak ada Jadwal Tayang yang Tersedia</h3>
+                <p class="text-gray-400 mb-6">Film ini tidak memiliki Jadwal Tayang yang tersedia.</p>
                 <a href="{{ route('home') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors">
-                    <i class="fas fa-arrow-left mr-2"></i>Browse Other Movies
+                    <i class="fas fa-arrow-left mr-2"></i>Cari Film Lain
                 </a>
             </div>
         @endif

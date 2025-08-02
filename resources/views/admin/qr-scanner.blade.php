@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'QR Scanner - Admin Panel')
-@section('page-title', 'QR Scanner')
+@section('title', 'Pemindai QR - Panel Admin')
+@section('page-title', 'Pemindai QR')
 
 @push('styles')
 <style>
@@ -234,90 +234,81 @@
 @endpush
 
 @section('content')
-<!-- Header -->
 <div class="mb-8">
     <h1 class="text-3xl font-bold text-white flex items-center">
         <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mr-4">
             <i class="fas fa-qrcode text-white text-xl"></i>
         </div>
-        QR Code Scanner
+        Pemindai Kode QR
     </h1>
-    <p class="text-gray-400 mt-2">Scan customer QR codes to view booking details and update payment status</p>
+    <p class="text-gray-400 mt-2">Pindai kode QR pelanggan untuk melihat detail reservasi dan update status pembayaran</p>
 </div>
 
-<!-- Main Scanner Section -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <!-- QR Scanner -->
     <div class="scanner-container">
         <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-camera text-white"></i>
             </div>
-            <h3 class="text-xl font-semibold text-white">Camera Scanner</h3>
+            <h3 class="text-xl font-semibold text-white">Kamera Pemindai</h3>
         </div>
         
-        <!-- Camera Scanner -->
         <div class="mb-6">
             <div id="qr-reader" class="qr-reader-container">
                 <div id="qr-reader-placeholder" class="py-12">
                     <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-camera text-white text-3xl"></i>
                     </div>
-                    <h4 class="text-lg font-semibold text-white mb-4">Ready to Scan</h4>
-                    <p class="text-gray-400 mb-6">Click the button below to start your camera</p>
+                    <h4 class="text-lg font-semibold text-white mb-4">Siap untuk Scan</h4>
+                    <p class="text-gray-400 mb-6">Klik tombol di bawah untuk memulai kamera</p>
                     <button id="start-camera" class="start-camera-btn">
-                        <i class="fas fa-video mr-3"></i>Start Camera
+                        <i class="fas fa-video mr-3"></i>Mulai Kamera
                     </button>
                 </div>
             </div>
         </div>
         
-        <!-- Manual Code Input -->
         <div class="border-t border-gray-600 pt-6">
             <label for="manual-code" class="block text-sm font-semibold text-gray-300 mb-3">
-                <i class="fas fa-keyboard mr-1"></i>Or enter booking code manually:
+                <i class="fas fa-keyboard mr-1"></i>Atau masukan kode reservasi secara manual:
             </label>
             <div class="flex space-x-3">
                 <input type="text" 
                        id="manual-code" 
-                       placeholder="Enter booking code" 
+                       placeholder="Masukkan kode reservasi" 
                        class="manual-input flex-1">
                 <button onclick="scanManualCode()" class="search-btn">
-                    <i class="fas fa-search mr-2"></i>Search
+                    <i class="fas fa-search mr-2"></i>Cari
                 </button>
             </div>
         </div>
         
-        <!-- Scanner Status -->
         <div id="scanner-status" class="hidden">
             <div id="status-message" class="status-alert"></div>
         </div>
     </div>
 
-    <!-- Booking Details -->
     <div class="details-container">
         <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-ticket-alt text-white"></i>
             </div>
-            <h3 class="text-xl font-semibold text-white">Booking Details</h3>
+            <h3 class="text-xl font-semibold text-white">Detail Reservasi</h3>
         </div>
         
         <div id="booking-details" class="hidden">
-            <!-- Booking details will be displayed here -->
         </div>
         
         <div id="no-booking" class="empty-state">
             <div class="empty-icon">
                 <i class="fas fa-search text-gray-400 text-3xl"></i>
             </div>
-            <h4 class="text-lg font-semibold text-white mb-2">No Booking Scanned</h4>
-            <p class="text-gray-400">Scan a QR code or enter a booking code to view details</p>
+            <h4 class="text-lg font-semibold text-white mb-2">Belum ada reservasi yang dipindai</h4>
+            <p class="text-gray-400">Pindai kode QR atau masukkan kode reservasi untuk melihat detail</p>
         </div>
     </div>
 </div>
 
-<!-- Recent Scans -->
 <div class="recent-scans-table">
     <div class="table-header">
         <div class="flex items-center justify-between">
@@ -325,21 +316,21 @@
                 <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                     <i class="fas fa-history text-white"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-white">Recent Scans</h3>
+                <h3 class="text-xl font-semibold text-white">Riwayat Pindaian</h3>
             </div>
-            <span class="text-sm text-gray-400">Latest scan activity</span>
+            <span class="text-sm text-gray-400">Aktivitas memindai terakhir</span>
         </div>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full">
             <thead class="bg-gray-800">
                 <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Time</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Code</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Customer</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Movie</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Waktu</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Kode</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Pelanggan</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Film</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody id="recent-scans" class="divide-y divide-gray-600">
@@ -348,8 +339,8 @@
                         <div class="empty-icon mx-auto">
                             <i class="fas fa-clock text-gray-400 text-2xl"></i>
                         </div>
-                        <p class="text-gray-300 font-medium">No recent scans</p>
-                        <p class="text-gray-500 text-sm">Scan history will appear here</p>
+                        <p class="text-gray-300 font-medium">Tidak ada pemindaian saat ini</p>
+                        <p class="text-gray-500 text-sm">Riwayat pemindaian akan tampil di sini</p>
                     </td>
                 </tr>
             </tbody>
@@ -357,7 +348,6 @@
     </div>
 </div>
 
-<!-- Status Update Modal -->
 <div id="statusModal" class="fixed inset-0 modal-backdrop hidden overflow-y-auto h-full w-full z-50 transition-opacity duration-300">
     <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-2xl rounded-2xl modal-content">
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-600">
@@ -372,7 +362,6 @@
             </button>
         </div>
         <div id="statusModalContent">
-            <!-- Modal content will be loaded here -->
         </div>
     </div>
 </div>
@@ -385,12 +374,10 @@ let html5QrCode = null;
 let recentScans = [];
 let currentBooking = null;
 
-// Initialize QR Scanner
 document.getElementById('start-camera').addEventListener('click', function() {
     startQrScanner();
 });
 
-// Handle URL parameter for pre-filled code
 const urlParams = new URLSearchParams(window.location.search);
 const prefilledCode = urlParams.get('code');
 if (prefilledCode) {
@@ -418,7 +405,6 @@ function startQrScanner() {
                     onScanSuccess(decodedText);
                 },
                 (errorMessage) => {
-                    // Handle scan errors silently
                 }
             ).then(() => {
                 showStatus('Camera started successfully', 'success');
@@ -430,7 +416,7 @@ function startQrScanner() {
             showStatus('No cameras found', 'error');
         }
     }).catch(err => {
-        showStatus('Error accessing cameras: ' + err, 'error');
+        showStatus('Tidak dapat mengakses kamera: ' + err, 'error');
     });
 }
 
@@ -467,12 +453,12 @@ function scanManualCode() {
     if (code) {
         fetchBookingDetails(code);
     } else {
-        showStatus('Please enter a booking code', 'error');
+        showStatus('Mohon masukkan kode booking', 'error');
     }
 }
 
 function fetchBookingDetails(uniqueCode) {
-    showStatus('Searching for booking...', 'info');
+    showStatus('Sedang mencari...', 'info');
     
     fetch(`{{ route('admin.scan-booking') }}`, {
         method: 'POST',
@@ -488,9 +474,9 @@ function fetchBookingDetails(uniqueCode) {
             currentBooking = data.booking;
             displayBookingDetails(data.booking);
             addToRecentScans(data.booking);
-            showStatus('Booking found successfully', 'success');
+            showStatus('Kode berhasil ditemukan', 'success');
         } else {
-            showStatus('Booking not found', 'error');
+            showStatus('Kode tidak berhasil ditemukan', 'error');
             hideBookingDetails();
         }
     })
@@ -514,17 +500,16 @@ function displayBookingDetails(booking) {
 
     const detailsHtml = `
         <div class="space-y-6">
-            <!-- Customer Information -->
             <div class="booking-info-card">
                 <h4 class="font-semibold text-white mb-4 flex items-center">
-                    <i class="fas fa-user mr-2 text-blue-400"></i>Customer Information
+                    <i class="fas fa-user mr-2 text-blue-400"></i>Informasi Pelanggan
                 </h4>
                 <div class="info-grid">
-                    <span class="info-label">Name:</span>
+                    <span class="info-label">Nama:</span>
                     <span class="info-value font-semibold">${booking.customer_name}</span>
-                    <span class="info-label">Phone:</span>
+                    <span class="info-label">Nomor HP:</span>
                     <span class="info-value">${booking.customer_phone}</span>
-                    <span class="info-label">Booking Code:</span>
+                    <span class="info-label">Kode Booking:</span>
                     <span class="info-value font-mono bg-gray-800 px-2 py-1 rounded text-sm">${booking.unique_code}</span>
                     <span class="info-label">Status:</span>
                     <span class="info-value">
@@ -535,28 +520,27 @@ function displayBookingDetails(booking) {
                 </div>
             </div>
 
-            <!-- Movie Information -->
             <div class="booking-info-card">
                 <h4 class="font-semibold text-white mb-4 flex items-center">
-                    <i class="fas fa-film mr-2 text-green-400"></i>Movie & Schedule
+                    <i class="fas fa-film mr-2 text-green-400"></i>Film & Jadwal
                 </h4>
                 <div class="info-grid">
-                    <span class="info-label">Movie:</span>
+                    <span class="info-label">Film:</span>
                     <span class="info-value font-semibold">${booking.schedule.movie.title}</span>
-                    <span class="info-label">Cinema:</span>
+                    <span class="info-label">Gedung:</span>
                     <span class="info-value">${booking.schedule.studio.cinema.name}</span>
-                    <span class="info-label">Location:</span>
+                    <span class="info-label">Lokasi:</span>
                     <span class="info-value text-sm">${booking.schedule.studio.cinema.location}</span>
                     <span class="info-label">Studio:</span>
                     <span class="info-value">${booking.schedule.studio.name}</span>
-                    <span class="info-label">Date:</span>
+                    <span class="info-label">Tanggal:</span>
                     <span class="info-value">${new Date(booking.schedule.start_time).toLocaleDateString('id-ID', { 
                         weekday: 'long', 
                         year: 'numeric', 
                         month: 'long', 
                         day: 'numeric' 
                     })}</span>
-                    <span class="info-label">Showtime:</span>
+                    <span class="info-label">Jadwal:</span>
                     <span class="info-value font-medium">${new Date(booking.schedule.start_time).toLocaleTimeString('id-ID', { 
                         hour: '2-digit', 
                         minute: '2-digit' 
@@ -567,24 +551,22 @@ function displayBookingDetails(booking) {
                 </div>
             </div>
 
-            <!-- Seats & Payment -->
             <div class="booking-info-card">
                 <h4 class="font-semibold text-white mb-4 flex items-center">
-                    <i class="fas fa-couch mr-2 text-purple-400"></i>Seats & Payment
+                    <i class="fas fa-couch mr-2 text-purple-400"></i>Kursi & Pembayaran
                 </h4>
                 <div class="info-grid">
-                    <span class="info-label">Seats:</span>
+                    <span class="info-label">Kursi:</span>
                     <div class="info-value">${seatsHtml}</div>
-                    <span class="info-label">Price per seat:</span>
+                    <span class="info-label">Harga per Kursi:</span>
                     <span class="info-value">Rp ${booking.schedule.price.toLocaleString('id-ID')}</span>
-                    <span class="info-label">Total seats:</span>
+                    <span class="info-label">Total Kursi:</span>
                     <span class="info-value font-semibold">${booking.seats.length}</span>
-                    <span class="info-label">Total amount:</span>
+                    <span class="info-label">Total Harga:</span>
                     <span class="info-value font-bold text-green-400 text-lg">Rp ${totalAmount.toLocaleString('id-ID')}</span>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="flex flex-wrap gap-3" id="action-buttons">
                 ${getActionButtons(booking)}
             </div>
@@ -601,25 +583,25 @@ function getActionButtons(booking) {
         buttons += `
             <button onclick="updateBookingStatus('${booking.unique_code}', 'paid')" 
                     class="action-button btn-success">
-                <i class="fas fa-check mr-2"></i>Mark as Paid
+                <i class="fas fa-check mr-2"></i>Tandai sebagai Dibayar
             </button>
             <button onclick="updateBookingStatus('${booking.unique_code}', 'cancelled')" 
                     class="action-button btn-danger">
-                <i class="fas fa-times mr-2"></i>Cancel Booking
+                <i class="fas fa-times mr-2"></i>Batalkan Booking
             </button>
         `;
     } else if (booking.status === 'paid') {
         buttons += `
             <button onclick="updateBookingStatus('${booking.unique_code}', 'cancelled')" 
                     class="action-button btn-danger">
-                <i class="fas fa-ban mr-2"></i>Cancel (Refund)
+                <i class="fas fa-ban mr-2"></i>Batalkan (Refund)
             </button>
         `;
     } else if (booking.status === 'cancelled') {
         buttons += `
             <button onclick="updateBookingStatus('${booking.unique_code}', 'pending_payment')" 
                     class="action-button btn-success">
-                <i class="fas fa-undo mr-2"></i>Reactivate
+                <i class="fas fa-undo mr-2"></i>Reaktivasi
             </button>
         `;
     }
@@ -627,7 +609,7 @@ function getActionButtons(booking) {
     buttons += `
         <button onclick="printBookingDetails()" 
                 class="action-button btn-secondary">
-            <i class="fas fa-print mr-2"></i>Print Details
+            <i class="fas fa-print mr-2"></i>Print Detail
         </button>
     `;
     
@@ -635,11 +617,11 @@ function getActionButtons(booking) {
 }
 
 function updateBookingStatus(uniqueCode, newStatus) {
-    const confirmMessage = `Are you sure you want to ${newStatus === 'paid' ? 'mark this booking as paid' : newStatus === 'cancelled' ? 'cancel this booking' : 'update this booking status'}?`;
+    const confirmMessage = `Apakah kamu yakin kamu ingin ${newStatus === 'paid' ? 'tandai booking ini sebagai Dibayar?' : newStatus === 'cancelled' ? 'membatalkan booking ini?' : 'update status booking ini?'}?`;
     
     if (!confirm(confirmMessage)) return;
     
-    showStatus('Updating booking status...', 'info');
+    showStatus('Mengupdate status booking...', 'info');
     
     fetch(`{{ route('admin.update-booking-status') }}`, {
         method: 'POST',
@@ -656,25 +638,22 @@ function updateBookingStatus(uniqueCode, newStatus) {
     .then(data => {
         if (data.success) {
             currentBooking = data.booking;
-            showStatus('Booking status updated successfully', 'success');
+            showStatus('Status booking berhasil diupdate', 'success');
             
-            // Update the display
             const statusElement = document.getElementById('current-status');
             statusElement.textContent = newStatus.replace('_', ' ').toUpperCase();
             statusElement.className = `px-3 py-1 text-xs rounded-full font-semibold ${getStatusClass(newStatus)}`;
             
-            // Update action buttons
             document.getElementById('action-buttons').innerHTML = getActionButtons(data.booking);
             
-            // Update recent scans
             updateRecentScansTable();
         } else {
-            showStatus('Failed to update booking status: ' + data.message, 'error');
+            showStatus('Gagal untuk update status booking: ' + data.message, 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showStatus('Error updating booking status', 'error');
+        showStatus('Error mengupdate status booking', 'error');
     });
 }
 
@@ -710,8 +689,8 @@ function updateRecentScansTable() {
                     <div class="empty-icon mx-auto">
                         <i class="fas fa-clock text-gray-400 text-2xl"></i>
                     </div>
-                    <p class="text-gray-300 font-medium">No recent scans</p>
-                    <p class="text-gray-500 text-sm">Scan history will appear here</p>
+                    <p class="text-gray-300 font-medium">Tidak ada pindaian terbaru</p>
+                    <p class="text-gray-500 text-sm">Riwayat pemindaian akan tampil di sini</p>
                 </td>
             </tr>
         `;
@@ -789,14 +768,12 @@ function closeStatusModal() {
     document.getElementById('statusModal').classList.add('hidden');
 }
 
-// Handle Enter key in manual code input
 document.getElementById('manual-code').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         scanManualCode();
     }
 });
 
-// Cleanup on page unload
 window.addEventListener('beforeunload', function() {
     stopQrScanner();
 });

@@ -31,7 +31,7 @@
         
         <div class="flex items-center text-gray-400 text-sm mb-2">
             <i class="fas fa-clock mr-2"></i>
-            <span>{{ $movie->duration_minutes }} min</span>
+            <span>{{ $movie->duration_minutes }} menit</span>
             <span class="mx-2">•</span>
             <span>{{ $movie->audience_rating }}</span>
         </div>
@@ -44,7 +44,7 @@
             </div>
             <a href="{{ route('movie.show', $movie->id) }}" 
                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                View Details
+                Lihat Detail
             </a>
         </div>
     </div>
