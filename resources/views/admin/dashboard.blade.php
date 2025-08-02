@@ -1,24 +1,16 @@
 <x-admin.layout title="Dashboard - Panel Admin" pageTitle="Dashboard">
     <x-slot name="styles">
+        <x-booking.styles />
     </x-slot>
 
-    <div class="mb-8 flex items-center justify-between">
-        <div>
-            <h1 class="text-3xl font-bold text-white flex items-center mb-2">
-                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mr-4">
-                    <i class="fas fa-chart-line text-white text-xl"></i>
-                </div>
-                Ringkasan Dashboard
-            </h1>
-            <p class="text-gray-400">Monitor Operasi dan Performa Bioskopin</p>
-        </div>
-        <div class="text-right text-gray-400">
-            <div class="text-lg font-semibold">{{ now()->format('H:i') }}</div>
-            <div class="text-sm">{{ now()->format('l, j F Y') }}</div>
-        </div>
-    </div>
+    <x-admin.page-header 
+        title="Ringkasan Dashboard"
+        description="Monitor Operasi dan Performa Bioskopin"
+        icon="fas fa-chart-line"
+        iconColor="blue"
+        :showDateTime="true" />
 
-    <div class="grid grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <x-admin.metric-card 
             icon="fas fa-film"
             value="{{ $totalMovies }}"
@@ -48,7 +40,7 @@
             iconBg="rgba(245, 158, 11, 0.15)" />
     </div>
 
-    <div class="grid grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <x-admin.action-card title="Shortcut" headerIcon="fas fa-bolt" headerIconColor="blue">
             <x-admin.action-item 
                 url="{{ route('admin.qr-scanner') }}"
@@ -75,9 +67,9 @@
                 accentColor="#8b5cf6" />
         </x-admin.action-card>
 
-        <div class="col-span-2">
+        <div class="col-span-1 lg:col-span-2">
             <x-admin.action-card title="Performa hari ini" headerIcon="fas fa-calendar-day" headerIconColor="orange">
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <x-admin.info-block 
                         icon="fas fa-ticket-alt"
                         iconColor="blue"
@@ -102,99 +94,90 @@
         </div>
     </div>
 
-    <x-admin.data-table 
+    <x-admin.table-container 
         title="Booking Terbaru" 
         icon="fas fa-list" 
         iconColor="indigo"
         viewAllUrl="{{ route('admin.bookings.index') }}">
         
-        <table class="table w-full">
-            <thead>
-                <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Pelanggan</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Film</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Bioskop</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Jadwal Tayang</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Kursi</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Status</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Total</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($recentBookings as $booking)
-                <tr>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center mr-3">
-                                <span class="text-white font-semibold text-sm">{{ substr($booking->customer_name, 0, 1) }}</span>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-white">{{ $booking->customer_name }}</div>
-                                <div class="text-sm text-gray-400">{{ $booking->customer_phone }}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm font-medium text-white">{{ $booking->schedule->movie->title }}</div>
-                        <div class="text-sm text-gray-400">{{ $booking->schedule->movie->duration_minutes }} menit</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm text-white">{{ $booking->schedule->studio->cinema->name }}</div>
-                        <div class="text-sm text-gray-400">{{ $booking->schedule->studio->name }}</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm text-white">{{ $booking->schedule->start_time->format('j M Y') }}</div>
-                        <div class="text-sm text-gray-400">{{ $booking->schedule->start_time->format('H:i') }}</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex flex-wrap gap-1">
-                            @foreach($booking->seats as $seat)
-                                <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded font-medium">
-                                    {{ $seat->row }}{{ $seat->number }}
-                                </span>
-                            @endforeach
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <x-admin.status-pill :status="$booking->status" />
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm font-semibold text-white">
-                            Rp {{ number_format($booking->schedule->price * $booking->seats->count(), 0, ',', '.') }}
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center space-x-2">
-                            <button onclick="showBookingDetails('{{ $booking->unique_code }}')"
-                                    class="text-blue-400 hover:text-blue-300 p-2 hover:bg-gray-700 rounded-lg transition-colors"
-                                    title="View Details">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="scanQrCode('{{ $booking->unique_code }}')"
-                                    class="text-green-400 hover:text-green-300 p-2 hover:bg-gray-700 rounded-lg transition-colors"
-                                    title="View QR">
-                                <i class="fas fa-qrcode"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="8" class="px-6 py-12 text-center">
-                        <div class="flex flex-col items-center">
-                            <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mb-4">
-                                <i class="fas fa-ticket-alt text-gray-400 text-2xl"></i>
-                            </div>
-                            <p class="text-gray-300 font-medium">No recent bookings</p>
-                            <p class="text-gray-500 text-sm">New bookings will appear here</p>
-                        </div>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </x-admin.data-table>
+        <x-slot name="thead">
+            <tr>
+                <th>Pelanggan</th>
+                <th>Film</th>
+                <th>Bioskop</th>
+                <th>Jadwal Tayang</th>
+                <th>Kursi</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Aksi</th>
+            </tr>
+        </x-slot>
+
+        @forelse($recentBookings as $booking)
+        <tr>
+            <td>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+                        <span class="text-white font-semibold text-sm">{{ substr($booking->customer_name, 0, 1) }}</span>
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium text-white">{{ $booking->customer_name }}</div>
+                        <div class="text-sm text-gray-400">{{ $booking->customer_phone }}</div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="text-sm font-medium text-white">{{ $booking->schedule->movie->title }}</div>
+                <div class="text-sm text-gray-400">{{ $booking->schedule->movie->duration_minutes }} menit</div>
+            </td>
+            <td>
+                <div class="text-sm text-white">{{ $booking->schedule->studio->cinema->name }}</div>
+                <div class="text-sm text-gray-400">{{ $booking->schedule->studio->name }}</div>
+            </td>
+            <td>
+                <div class="text-sm text-white">{{ $booking->schedule->start_time->format('j M Y') }}</div>
+                <div class="text-sm text-gray-400">{{ $booking->schedule->start_time->format('H:i') }}</div>
+            </td>
+            <td>
+                <div class="flex flex-wrap gap-1">
+                    @foreach($booking->seats as $seat)
+                        <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded font-medium">
+                            {{ $seat->row }}{{ $seat->number }}
+                        </span>
+                    @endforeach
+                </div>
+            </td>
+            <td>
+                <x-admin.status-pill :status="$booking->status" />
+            </td>
+            <td>
+                <div class="text-sm font-semibold text-white">
+                    Rp {{ number_format($booking->schedule->price * $booking->seats->count(), 0, ',', '.') }}
+                </div>
+            </td>
+            <td>
+                <div class="flex items-center space-x-2">
+                    <button onclick="showBookingDetails('{{ $booking->unique_code }}')"
+                            class="text-blue-400 hover:text-blue-300 p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                            title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button onclick="scanQrCode('{{ $booking->unique_code }}')"
+                            class="text-green-400 hover:text-green-300 p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                            title="View QR">
+                        <i class="fas fa-qrcode"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        @empty
+        <x-admin.empty-state 
+            colspan="8"
+            icon="fas fa-ticket-alt"
+            title="Tidak ada booking terbaru"
+            description="Booking baru akan muncul di sini" />
+        @endforelse
+    </x-admin.table-container>
 
     <x-modal id="bookingModal" title="Detail Reservasi" icon="fas fa-ticket-alt" closeFunction="closeBookingModal()">
         <div id="bookingDetails" class="space-y-4">
